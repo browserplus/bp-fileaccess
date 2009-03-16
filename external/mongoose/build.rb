@@ -113,5 +113,11 @@ else
     # make & install locally (see configure --prefix arg)
     puts "building #{$pkg}..."
     system("make bsd")
+
+    # plunk it in builddir
+    FileUtils.mkdir_p(File.join(buildDir, "include"))
+    FileUtils.mkdir_p(File.join(buildDir, "lib"))
+    FileUtils.install("libmongoose.a", File.join(buildDir, "lib"))
+    FileUtils.install("mongoose.h", File.join(buildDir, "include"))
   end
 end
