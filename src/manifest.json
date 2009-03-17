@@ -1,0 +1,10 @@
+{
+  "type": "standalone",
+  "CoreletLibrary": "@ServiceLibrary@",
+  "strings": { 
+    "en": { 
+      "title": "File Access", 
+      "summary": "Allows webpages to display the contents of files that you select."
+    }
+  }
+}
