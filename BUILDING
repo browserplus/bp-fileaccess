@@ -1,0 +1,13 @@
+XXX: this service needs some updated documentation and should be 
+ported to the bakery.  Here's roughly how to get it building today
+
+1. git clone bp-github:browserplus/bp-fileaccess
+2. cd bp-fileaccess
+3. git submodule init && git submodule update
+4. cd external/mongoose 
+5. ./build.rb
+6. cd ../..
+7. mkdir build 
+8. cd build
+9. cmake ..
+10. make
