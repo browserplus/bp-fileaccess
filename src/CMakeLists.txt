@@ -1,8 +1,8 @@
 #####
-# A CMake build file for the FileAccess service, a service that can
-# serve user selected files over localhost HTTP to a Browser environment
+# A CMake build file for the ImageAlter service, a service that can
+# manipulate images.
 # 
-# Copyright 2009, Yahoo!
+# Copyright 2010, Yahoo!
 # 
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -31,9 +31,15 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-# 
-# Original Author: Lloyd Hilaiel
 #####
+
+cmake_minimum_required(VERSION 2.6)
+IF (APPLE) 
+  SET (CMAKE_OSX_DEPLOYMENT_TARGET "10.4"
+       CACHE STRING "Compile for tiger deployment" FORCE)
+ENDIF (APPLE)
+
+INCLUDE(BuildConfigs.cmake)
 
 SET (serviceName FileAccess)
 
@@ -44,35 +50,42 @@ SET (outputDir "${CMAKE_CURRENT_BINARY_DIR}/${serviceName}")
 # default to a debug build.  This gets us symbols by default under
 # the cmake makefile generator
 IF (NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE "Debug")
+  SET(CMAKE_BUILD_TYPE "Release")
 ENDIF ()
 
+SET(ServiceTools ${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools)
+
 INCLUDE_DIRECTORIES(
-  "${CMAKE_CURRENT_SOURCE_DIR}/../external/mongoose/mongoose_built/include"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../external/bpsdk/include"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/DataMapping/src"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../external/built/include"
+  "${ServiceTools}/CppTools/external/bpsdk/include"
+  "${ServiceTools}/CppTools/src"
 )
 
 LINK_DIRECTORIES(
-  "${CMAKE_CURRENT_SOURCE_DIR}/../external/mongoose/mongoose_built/lib"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../external/built/lib"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../external/built/lib/${CMAKE_BUILD_TYPE}"
 )
 
 SET(EXT_SRCS
-  ${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/DataMapping/src/bptypeutil.cpp
+  ${ServiceTools}/CppTools/src/bptypeutil.cpp
+  ${ServiceTools}/CppTools/src/bpurlutil.cpp
+  ${ServiceTools}/CppTools/src/bpservicedescription.cpp
+  ${ServiceTools}/CppTools/src/bpserviceversion.cpp
 )
 
-SET(SRCS service.cpp FileServer.cpp )
-SET(HDRS FileServer.h )
+SET(SRCS service.cpp FileServer.cpp)
+SET(HDRS service.h ResourceLimit.h FileServer.h)
+
+# add required OS libs here
+SET(OSLIBS)
 
 IF (WIN32)
-  SET(OSLIBS)
-ELSE ()
-  SET(OSLIBS pthread dl)
+ELSE()
 ENDIF ()
 
 ADD_LIBRARY(${serviceName} MODULE ${EXT_SRCS} ${SRCS} ${HDRS})
 
-TARGET_LINK_LIBRARIES(${serviceName} mongoose ${OSLIBS})
+TARGET_LINK_LIBRARIES(${serviceName} mongoose_s)
 
 # create service directory
 FILE(MAKE_DIRECTORY ${outputDir})
@@ -85,6 +98,7 @@ CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/manifest.json"
 ADD_CUSTOM_COMMAND(TARGET ${serviceName} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
                            \"${loc}\" \"${outputDir}\")
+
 IF (APPLE)
   ADD_CUSTOM_COMMAND(TARGET ${serviceName} POST_BUILD
                      COMMAND strip -x \"${outputDir}/${ServiceLibrary}\")

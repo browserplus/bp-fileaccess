@@ -1,50 +1,30 @@
-/*
- * Copyright 2008-2009, Yahoo!
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- * 
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- * 
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
- *     distribution.
- * 
- *  3. Neither the name of Yahoo! nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
-
 /**
  *  Abstraction around embedded HTTP server to serve up files over local
  *  URLs for webpage access
+ *
+ *  (c) 2008 Yahoo! inc.
  */
 
 #ifndef __FILE_SERVER_H__
 #define __FILE_SERVER_H__
 
 #include <string>
-#include <map>
+#include <vector>
+#include "BPUtils/BPUtils.h"
+#include "ResourceLimit.h"
 
-class FileServer
+class ChunkInfo
+{
+ public:
+    bp::file::Path m_path;
+    size_t m_chunkNumber;
+    size_t m_numberOfChunks;
+};
+
+class FileServer : public bp::http::server::IHandler
 {
   public:
-    FileServer();
+    FileServer(const bp::file::Path& tempDir);
     ~FileServer();
 
     /* start the server, returns host/port when bound, otherwise returns
@@ -52,11 +32,27 @@ class FileServer
     std::string start();
 
     /* add a file to the server, returning a url, .empty() on error */ 
-    std::string addFile(std::string path);
+    std::string addFile(const bp::file::Path& path);
+
+    /* add a chunked file to the server, returning a vector of 
+     * ChunkInfo (empty on error)
+     */
+    std::vector<ChunkInfo> getFileChunks(const bp::file::Path& path,
+                                         size_t chunkSize);
+
+    /* get a slice of a file */
+    bp::file::Path getSlice(const bp::file::Path& path,
+                            size_t offset, size_t size);
+
   private:
-    void * m_httpServer();
+    virtual bool processRequest(const bp::http::Request & request,
+                                bp::http::Response & response);
+
+    bp::http::server::Server m_httpServer;
     unsigned short int m_port;
-    std::map<std::string, std::string> m_urls;
+    std::map<std::string, bp::file::Path> m_paths;
+    bp::file::Path m_tempDir;
+    ResourceLimit m_limit;
 };
 
 #endif

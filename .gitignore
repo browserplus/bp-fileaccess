@@ -1,5 +1,6 @@
-.gitignore
 /.gitsubmodules
 *~
 /build
+/src/build
+/external/built
 

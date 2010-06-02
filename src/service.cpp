@@ -1,59 +1,43 @@
-/*
- * Copyright 2009, Yahoo!
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- * 
- *  1. Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- * 
- *  2. Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
- *     distribution.
- * 
- *  3. Neither the name of Yahoo! nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
-
 #include <ServiceAPI/bperror.h>
 #include <ServiceAPI/bptypes.h>
 #include <ServiceAPI/bpdefinition.h>
 #include <ServiceAPI/bpcfunctions.h>
 #include <ServiceAPI/bppfunctions.h>
 
-#include "bptypeutil.h"
-#include "FileServer.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <fstream>
 
+#include "BPUtils/BPUtils.h"
+#include "FileServer.h"
+
+#include "corelet.h"
 
 // 2mb is max allowable read
 #define FA_MAX_READ (1<<21)
 
+// 2mb is default chunk size
+#define FA_CHUNK_SIZE (1<<21)
+
 const BPCFunctionTable * g_bpCoreFunctions = NULL;
 
 static int
-BPPAllocate(void ** instance, unsigned int, const BPElement *)
+BPPAllocate(void ** instance, unsigned int, const BPElement * elem)
 {
-    FileServer * fs = new FileServer;
+    bp::file::Path tempDir;
+    bp::Object * args = bp::Object::build(elem);
+    if (args->has("temp_dir", BPTString)) {
+        tempDir = (std::string)(*(args->get("temp_dir")));
+    } else {
+        g_bpCoreFunctions->log(BP_WARN,
+                               "(FileAccess) allocated (NO 'temp_dir' key)");
+        tempDir = bp::file::getTempPath(bp::file::getTempDirectory(),
+                                        "FileAccess");
+        g_bpCoreFunctions->log(BP_WARN, "temp_dir set to %s",
+                               tempDir.externalUtf8().c_str());
+    }
+
+    FileServer * fs = new FileServer(tempDir);
     fs->start();
     *instance = (void *) fs;
     assert(*instance != NULL);
@@ -80,7 +64,7 @@ hasEmbeddedNulls(unsigned char * bytes, unsigned int len)
 }
 
 static bp::String *
-readFileContents(const std::string & path,
+readFileContents(const bp::file::Path & path,
                  unsigned int offset, int size, std::string & err)
 {
     std::ifstream fstream;
@@ -95,15 +79,13 @@ readFileContents(const std::string & path,
     if (size <= 0) size = FA_MAX_READ;
 
     // verify file exists and open
-    // XXX: abstract this guy
-/*
     if (!bp::file::openReadableStream(
             fstream, path, std::ios_base::in | std::ios_base::binary))
     {
         err = "cannot open file for reading";
         return NULL;
     }
-*/
+
     // now validate offset and size
     fstream.seekg (0, std::ios::end);
     if (offset > fstream.tellg()) {
@@ -155,8 +137,6 @@ BPPInvoke(void * instance, const char * funcName,
     if (elem) args = bp::Object::build(elem);
 
     // all functions have a "file" argument, validate we can parse it
-/*
-  XXX: reimplement/abstract me
     bp::url::Url pathUrl;
     if (!pathUrl.parse((std::string) (*(args->get("file")))))
     {
@@ -166,19 +146,19 @@ BPPInvoke(void * instance, const char * funcName,
         return;
     }
 
-    std::string path = bp::url::pathFromURL(pathUrl.toString());
-*/    
-    std::string path;
+    bp::file::Path path = bp::file::pathFromURL(pathUrl.toString());
     
-    if (!strcmp(funcName, "Read"))
+    if (!strcmp(funcName, "read"))
     {
+        BPCLOG_INFO( "read" );
+        
         unsigned int offset = 0;
         int size = -1;
         if (args->has("offset", BPTInteger)) {
-            offset = (int) *(args->get("offset"));            
+            offset = (int) (long long) *(args->get("offset"));            
         }
         if (args->has("size", BPTInteger)) {
-            size = *(args->get("size"));            
+            size = (int) (long long) *(args->get("size"));            
         }
 
         bp::String * contents = NULL;
@@ -193,8 +173,10 @@ BPPInvoke(void * instance, const char * funcName,
         }
         if (contents) delete contents;
     }
-    else if (!strcmp(funcName, "GetURL"))
+    else if (!strcmp(funcName, "getURL"))
     {
+        BPCLOG_INFO( "getURL" );
+        
         FileServer * fs = (FileServer *) instance;
 
         std::string url = fs->addFile(path);
@@ -205,6 +187,59 @@ BPPInvoke(void * instance, const char * funcName,
             g_bpCoreFunctions->postResults(tid, bp::String(url).elemPtr());
         }
     }
+    else if (!strcmp(funcName, "chunk"))
+    {
+        BPCLOG_INFO( "chunk" );
+        
+        size_t chunkSize = FA_CHUNK_SIZE;
+        if (args->has("chunkSize", BPTInteger)) {
+            chunkSize = (size_t) (long long) *(args->get("chunkSize"));            
+        }
+
+        FileServer * fs = (FileServer *) instance;
+
+        std::vector<ChunkInfo> v;
+        std::string err;
+        try {
+            v = fs->getFileChunks(path, chunkSize);
+        } catch (const std::string& e) {
+            err = e;
+            v.clear();
+        }
+
+        if (v.empty()) {
+            g_bpCoreFunctions->postError(tid, "bp.fileAccessError", err.c_str());
+        } else {
+            bp::List* l = new bp::List;
+            for (size_t i = 0; i < v.size(); i++) {
+                l->append(new bp::Path(v[i].m_path));
+            }
+            g_bpCoreFunctions->postResults(tid, l->elemPtr());
+        }
+    }
+    else if (!strcmp(funcName, "slice"))
+    {
+        BPCLOG_INFO( "slice" );
+        size_t offset = 0, size = -1;
+
+        if (args->has("offset", BPTInteger)) {
+            offset = (int) (long long) *(args->get("offset"));            
+        }
+        if (args->has("size", BPTInteger)) {
+            size = (int) (long long) *(args->get("size"));            
+        }
+
+        FileServer * fs = (FileServer *) instance;
+
+        std::string err;
+        try {
+            bp::file::Path s;
+            s = fs->getSlice(path, offset, size);
+            g_bpCoreFunctions->postResults(tid, bp::Path(s).elemPtr());
+        } catch (const std::string& e) {
+            g_bpCoreFunctions->postError(tid, "bp.fileAccessError", e.c_str());
+        }
+    }
 
     // platform ensures that one of the above functions is invoked
     if (args) delete args;
@@ -212,28 +247,29 @@ BPPInvoke(void * instance, const char * funcName,
     return;
 }
 
-/* beneath is the definition of the service interface */
-BPArgumentDefinition s_readFuncArgs[] = {
+/* here is the definition of the corelet interface */
+BPArgumentDefinition s_readFileArgs[] = {
     {
         "file",
-        "The file that you would like to read from.",
+        "The input file to operate on.",
         BPTPath,
         BP_TRUE
     },
     {
         "offset",
-        "The option byte offset at which you like to start reading.",
+        "The beginning byte offset.",
         BPTInteger,
         BP_FALSE
     },
     {
         "size",
-        "The amount of data to read in bytes",
+        "The amount of data.",
         BPTInteger,
         BP_FALSE
     }
 };
 
+/* here is the definition of the corelet interface */
 BPArgumentDefinition s_getURLArgs[] = {
     {
         "file",
@@ -243,56 +279,63 @@ BPArgumentDefinition s_getURLArgs[] = {
     }
 };
 
-BPArgumentDefinition s_getChunkArgs[] = {
+BPArgumentDefinition s_getFileChunksArgs[] = {
     {
         "file",
-        "The file that you would like to get a chunk out of.",
+        "The file that you would like to chunk.",
         BPTPath,
         BP_TRUE
     },
-    {
-        "offset",
-        "The optional byte offset at which you like to start reading.",
-        BPTInteger,
-        BP_FALSE
-    },
-    {
-        "size",
-        "The amount of data to read in bytes",
+    {  
+        "chunkSize",
+        "The desired chunk size, not to exceed 2MB.  Default is 2MB.",
         BPTInteger,
         BP_FALSE
     }
 };
 
-
 BPFunctionDefinition s_functions[] = {
     {
-        "Read",
-        "Read up to 2mb of a file on disk.  You may specify offset and "
-        "length.",
-        sizeof(s_readFuncArgs)/sizeof(s_readFuncArgs[0]),
-        s_readFuncArgs
+        "read",
+        "Read the contents of a file on disk returning a string.  "
+        "If the file contains binary data an error will be returned.",
+        sizeof(s_readFileArgs)/sizeof(s_readFileArgs[0]),
+        s_readFileArgs
     },
     {
-        "GetURL",
+        "slice",
+        "Given a file and an optional offset and size, return a new "
+        "file whose contents are a subset of the first.",
+        sizeof(s_readFileArgs)/sizeof(s_readFileArgs[0]),
+        s_readFileArgs
+    },
+    {
+        "getURL",
         "Get a localhost url that can be used to attain the full contents"
-        " of a file on disk.",
+        " of a file on disk.  The URL will be of the form "
+        "http://127.0.0.1:<port>/<uuid> -- The port will be an ephemerally "
+        "bound port, the uuid will be a traditional GUID.  When a local "
+        "client accesses the URL, the FileAccess service will ignore any "
+        "appended pathing (i.e. for http://127.0.0.1:<port>/<uuid>/foo.tar.gz,"
+        " '/foo.tar.gz' will be ignored).  This allows client code to supply "
+        "a filename when triggering a browser supplied 'save as' dialog.",
         sizeof(s_getURLArgs)/sizeof(s_getURLArgs[0]),
         s_getURLArgs
     },
     {
-        "GetChunk",
-        "Attain a chunk (or byte range) of the specified file.",
-        sizeof(s_getChunkArgs)/sizeof(s_getChunkArgs[0]),
-        s_getChunkArgs
+        "chunk",
+        "Get a vector of objects that result from chunking a file. "
+        "The return value will be an ordered list of file handles with each "
+        "successive file representing a different chunk",
+        sizeof(s_getFileChunksArgs)/sizeof(s_getFileChunksArgs[0]),
+        s_getFileChunksArgs
     }
-
 };
 
 // a description of this corelet.
 BPCoreletDefinition s_coreletDef = {
     "FileAccess",
-    1, 1, 0,
+    2, 0, 1,
     "Access the contents of files that the user has selected.",
     sizeof(s_functions)/sizeof(s_functions[0]),
     s_functions
@@ -303,6 +346,9 @@ BPPInitialize(const BPCFunctionTable * bpCoreFunctions,
               const BPElement * parameterMap)
 {
     g_bpCoreFunctions = bpCoreFunctions;
+
+    bp::service::setupBPUtilsLogging( g_bpCoreFunctions->log );
+    
     return &s_coreletDef;
 }
 
