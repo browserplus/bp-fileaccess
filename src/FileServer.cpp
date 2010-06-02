@@ -8,8 +8,8 @@
 #include <fstream>
 
 #include "FileServer.h"
-
-#include "corelet.h"
+#include "service.h"
+#include "littleuuid.h"
 
 #define FS_MAX_TEMP_FILES 1024
 #define FS_MAX_TEMP_BYTES 1024 * 1024 * 512
@@ -25,7 +25,6 @@ FileServer::FileServer(const bp::file::Path& tempDir)
 FileServer::~FileServer()
 {
     BPCLOG_INFO( "Stopping m_httpServer." );
-    m_httpServer.stop();
     bp::file::remove(m_tempDir);
 }
 
@@ -34,12 +33,8 @@ FileServer::start()
 {
     std::stringstream boundTo;
     m_port = 0;
-    if (m_httpServer.bind(m_port) &&
-        m_httpServer.mount(std::string("*"), this) &&
-        m_httpServer.start())
-    {
-        boundTo << "127.0.0.1:" << m_port;
-    }
+
+    boundTo << "127.0.0.1:" << m_port;
 
     BPCLOG_INFO_STRM( "Bound to: " << boundTo.str() );
     return boundTo.str();
@@ -52,7 +47,8 @@ FileServer::addFile(const bp::file::Path& path)
     // generate a nice random url path
     std::stringstream url;    
     std::string uuid;
-    bp::uuid::generate(uuid);
+
+    uuid_generate(uuid);
     url << "http://127.0.0.1:" << m_port << "/" << uuid;
     m_paths[uuid] = path;
     
@@ -227,7 +223,7 @@ FileServer::getSlice(const bp::file::Path& path,
     return s;
 }
 
-
+/*
 bool
 FileServer::processRequest(const bp::http::Request & request,
                            bp::http::Response & response)
@@ -278,4 +274,4 @@ FileServer::processRequest(const bp::http::Request & request,
     BPCLOG_DEBUG( "Request processed." );
     return true;
 }
-
+*/

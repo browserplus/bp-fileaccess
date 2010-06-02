@@ -4,14 +4,15 @@
 #include <ServiceAPI/bpcfunctions.h>
 #include <ServiceAPI/bppfunctions.h>
 
+#include "FileServer.h"
+#include "service.h"
+#include "bptypeutil.hh"
+#include "bpurlutil.hh"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-
-#include "BPUtils/BPUtils.h"
-#include "FileServer.h"
-
-#include "corelet.h"
+#include <string.h>
 
 // 2mb is max allowable read
 #define FA_MAX_READ (1<<21)
@@ -137,8 +138,10 @@ BPPInvoke(void * instance, const char * funcName,
     if (elem) args = bp::Object::build(elem);
 
     // all functions have a "file" argument, validate we can parse it
-    bp::url::Url pathUrl;
-    if (!pathUrl.parse((std::string) (*(args->get("file")))))
+    std::string url = (*(args->get("file")));
+    std::string pathString = bp::urlutil::pathFromURL(url);
+
+    if (pathString.empty())
     {
         g_bpCoreFunctions->postError(tid, "bp.fileAccessError",
                                      "invalid file URI");
@@ -146,7 +149,7 @@ BPPInvoke(void * instance, const char * funcName,
         return;
     }
 
-    bp::file::Path path = bp::file::pathFromURL(pathUrl.toString());
+    bp::file::Path path(pathString);
     
     if (!strcmp(funcName, "read"))
     {
@@ -212,7 +215,7 @@ BPPInvoke(void * instance, const char * funcName,
         } else {
             bp::List* l = new bp::List;
             for (size_t i = 0; i < v.size(); i++) {
-                l->append(new bp::Path(v[i].m_path));
+                l->append(new bp::Path(v[i].m_path.utf8()));
             }
             g_bpCoreFunctions->postResults(tid, l->elemPtr());
         }
@@ -235,7 +238,7 @@ BPPInvoke(void * instance, const char * funcName,
         try {
             bp::file::Path s;
             s = fs->getSlice(path, offset, size);
-            g_bpCoreFunctions->postResults(tid, bp::Path(s).elemPtr());
+            g_bpCoreFunctions->postResults(tid, bp::Path(s.utf8()).elemPtr());
         } catch (const std::string& e) {
             g_bpCoreFunctions->postError(tid, "bp.fileAccessError", e.c_str());
         }
@@ -346,9 +349,6 @@ BPPInitialize(const BPCFunctionTable * bpCoreFunctions,
               const BPElement * parameterMap)
 {
     g_bpCoreFunctions = bpCoreFunctions;
-
-    bp::service::setupBPUtilsLogging( g_bpCoreFunctions->log );
-    
     return &s_coreletDef;
 }
 

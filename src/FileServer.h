@@ -8,10 +8,13 @@
 #ifndef __FILE_SERVER_H__
 #define __FILE_SERVER_H__
 
+#include "bp-file/bpfile.h"
+
+#include "ResourceLimit.h"
+
 #include <string>
 #include <vector>
-#include "BPUtils/BPUtils.h"
-#include "ResourceLimit.h"
+#include <map>
 
 class ChunkInfo
 {
@@ -21,7 +24,7 @@ class ChunkInfo
     size_t m_numberOfChunks;
 };
 
-class FileServer : public bp::http::server::IHandler
+class FileServer
 {
   public:
     FileServer(const bp::file::Path& tempDir);
@@ -45,10 +48,6 @@ class FileServer : public bp::http::server::IHandler
                             size_t offset, size_t size);
 
   private:
-    virtual bool processRequest(const bp::http::Request & request,
-                                bp::http::Response & response);
-
-    bp::http::server::Server m_httpServer;
     unsigned short int m_port;
     std::map<std::string, bp::file::Path> m_paths;
     bp::file::Path m_tempDir;

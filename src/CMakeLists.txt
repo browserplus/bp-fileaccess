@@ -73,19 +73,22 @@ SET(EXT_SRCS
   ${ServiceTools}/CppTools/src/bpserviceversion.cpp
 )
 
-SET(SRCS service.cpp FileServer.cpp)
-SET(HDRS service.h ResourceLimit.h FileServer.h)
+SET(SRCS service.cpp littleuuid.cpp FileServer.cpp)
+SET(HDRS service.h littleuuid.h ResourceLimit.h FileServer.h)
 
 # add required OS libs here
 SET(OSLIBS)
 
 IF (WIN32)
+   # Visual Studio does some autolink magic with boost, no need
+   # to specify library
 ELSE()
+   SET(BOOST_LIBS "boost_filesystem" "boost_system")
 ENDIF ()
 
 ADD_LIBRARY(${serviceName} MODULE ${EXT_SRCS} ${SRCS} ${HDRS})
 
-TARGET_LINK_LIBRARIES(${serviceName} mongoose_s)
+TARGET_LINK_LIBRARIES(${serviceName} mongoose_s bpfile_s ${BOOST_LIBS})
 
 # create service directory
 FILE(MAKE_DIRECTORY ${outputDir})
@@ -103,3 +106,11 @@ IF (APPLE)
   ADD_CUSTOM_COMMAND(TARGET ${serviceName} POST_BUILD
                      COMMAND strip -x \"${outputDir}/${ServiceLibrary}\")
 ENDIF (APPLE)
+
+# a custom step to build latest externals
+SET (pathToExtBuildRb "${CMAKE_CURRENT_SOURCE_DIR}/../external/build.rb")
+ADD_CUSTOM_TARGET(
+    BuildExternals ALL
+    COMMAND ruby ${pathToExtBuildRb}
+    COMMENT "Build 3rd party dependencies")
+ADD_DEPENDENCIES( ${serviceName} BuildExternals )
