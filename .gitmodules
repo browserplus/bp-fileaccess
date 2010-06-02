@@ -1,3 +1,6 @@
 [submodule "external/bp-service-tools"]
 	path = external/bp-service-tools
 	url = git://github.com/browserplus/bp-service-tools.git
+[submodule "external/bakery"]
+	path = external/bakery
+	url = git://github.com/lloyd/bakery.git
