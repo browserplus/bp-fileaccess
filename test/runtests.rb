@@ -7,8 +7,8 @@ require "test/unit"
 
 class TestFileAccess < Test::Unit::TestCase
   def setup
-    pathToService = File.join(File.dirname(__FILE__), "..", "src", "build", "FileAccess")
     curDir = File.dirname(__FILE__)
+    pathToService = File.join(curDir, "..", "src", "build", "FileAccess")
     @s = BrowserPlus::Service.new(pathToService)
 
     @binfile_path = File.expand_path(File.join(curDir, "service.bin"))
