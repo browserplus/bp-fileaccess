@@ -115,8 +115,8 @@ module BrowserPlus
       # always select the current instance
       @srp.syswrite "select #{@iid}\n"
       @srp.syswrite cmd
-      str = mypread(@srp, 10.0, /^error:|^(?:".*")\n|^}$|^(?:no such function: #{func.to_s})$/m)
-      raise str if str =~ /no such function: #{func.to_s}/ || str =~ /^error:/
+      str = mypread(@srp, 10.0, /^spawned process|^error:|^".*"\n|^}$|(?:^no such function: #{func.to_s}$)/m)
+      raise str if str =~ /no such function: #{func.to_s}/ || str =~ /^error:/ || str =~ /^spawned/
       JSON.parse("[#{str}]")[0]
     end
 
