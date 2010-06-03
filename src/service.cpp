@@ -116,7 +116,10 @@ readFileContents(const bp::file::Path & path,
         }
         // encode into a js literal
         s = new bp::String((char *) buffer, fstream.gcount());
+    } else {
+        s = new bp::String("", 0);
     }
+    
     fstream.close();
     
     delete [] buffer;

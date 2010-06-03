@@ -2,8 +2,8 @@
 
 require File.join(File.dirname(__FILE__), 'bp_service_runner')
 require 'uri'
-require "test/unit"
-
+require 'test/unit'
+require 'open-uri'
 
 class TestFileAccess < Test::Unit::TestCase
   def setup
@@ -29,7 +29,6 @@ class TestFileAccess < Test::Unit::TestCase
     assert_equal want, got
 
     # read() doesn't support binary data!  assert an exception is raised
-    want = File.open(@binfile_path, "rb"){ |f| f.read }
     assert_raise(RuntimeError) { got = @s.read({ 'file' => @binfile_uri }) }
 
     # partial read
@@ -41,5 +40,33 @@ class TestFileAccess < Test::Unit::TestCase
     want = File.read(@textfile_path, 25)[5, 20]
     got = @s.read({ 'file' => @textfile_uri, 'size' => 20, 'offset' => 5 })
     assert_equal want, got
+
+    # ensure out of range errors are raised properly 
+    assert_raise(RuntimeError) { @s.read({ 'file' => @textfile_uri, 'offset' => 1024000 }) }
+    
+    # read with offset set at last byte of file
+    want = ""
+    got = @s.read({ 'file' => @textfile_uri, 'offset' => File.size(@textfile_path) }) 
+    assert_equal want, got
   end
+
+  def test_geturl
+    want = File.read(@textfile_path)
+    url = @s.getURL({ 'file' => @textfile_uri })
+    got = open(url) { |f| f.read }
+    assert_equal want, got
+
+    # yeah, same thing a second time
+    want = File.read(@textfile_path)
+    url = @s.getURL({ 'file' => @textfile_uri })
+    got = open(url) { |f| f.read }
+    assert_equal want, got
+
+    #want = File.read(@binfile_path)
+    #url = @s.getURL({ 'file' => @binfile_uri })
+    #got = open(url) { |f| f.read }
+    #assert_equal want, got
+  end
+
+  # XXX: test chunk and slice
 end

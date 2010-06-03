@@ -301,6 +301,7 @@ FileServer::mongooseCallback(void * connPtr, void * requestPtr,
         return;
     }
 
+    mg_printf(conn, "HTTP/1.0 200 OK\r\n");
     mg_printf(conn, "Content-Length: %ld\r\n", len);
     mg_printf(conn, "Server: FileAccess BrowserPlus service\r\n");
 
