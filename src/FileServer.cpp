@@ -83,6 +83,10 @@ std::vector<ChunkInfo>
 FileServer::getFileChunks(const bp::file::Path& path,
                           size_t chunkSize)
 {
+    if (m_tempDir.empty()) {
+        throw std::string("no temp dir set, internal error");        
+    }
+
     try {
         boost::filesystem::create_directories(m_tempDir);
     } catch (const bp::file::tFileSystemError&) {
@@ -177,6 +181,10 @@ bp::file::Path
 FileServer::getSlice(const bp::file::Path& path,
                      size_t offset, size_t size)
 {
+    if (m_tempDir.empty()) {
+        throw std::string("no temp dir set, internal error");        
+    }
+
     char buf[BUFSIZE];
 
     try {

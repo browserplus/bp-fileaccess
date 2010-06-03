@@ -30,12 +30,8 @@ BPPAllocate(void ** instance, unsigned int, const BPElement * elem)
     if (args->has("temp_dir", BPTString)) {
         tempDir = (std::string)(*(args->get("temp_dir")));
     } else {
-        g_bpCoreFunctions->log(BP_WARN,
+        g_bpCoreFunctions->log(BP_ERROR,
                                "(FileAccess) allocated (NO 'temp_dir' key)");
-        tempDir = bp::file::getTempPath(bp::file::getTempDirectory(),
-                                        "FileAccess");
-        g_bpCoreFunctions->log(BP_WARN, "temp_dir set to %s",
-                               tempDir.externalUtf8().c_str());
     }
 
     FileServer * fs = new FileServer(tempDir);
