@@ -10,6 +10,10 @@
 #include "FileServer.h"
 #include "service.h"
 #include "littleuuid.h"
+#include "util/fileutil.hh"
+#include "util/bpsync.hh"
+
+#include <mongoose/mongoose.h>
 
 #define FS_MAX_TEMP_FILES 1024
 #define FS_MAX_TEMP_BYTES 1024 * 1024 * 512
@@ -17,13 +21,19 @@
 
 FileServer::FileServer(const bp::file::Path& tempDir) 
     : m_tempDir(tempDir),
-      m_limit(FS_MAX_TEMP_FILES, FS_MAX_TEMP_BYTES)
+      m_limit(FS_MAX_TEMP_FILES, FS_MAX_TEMP_BYTES),
+      m_ctx(NULL)
 {
     BPCLOG_INFO_STRM( "ctor, tempDir = " << m_tempDir );
 }
 
 FileServer::~FileServer()
 {
+    if (m_ctx) {
+        mg_stop((struct mg_context *) m_ctx);
+        mg_destroy((struct mg_context *) m_ctx);        
+        m_ctx = NULL;
+    }
     BPCLOG_INFO( "Stopping m_httpServer." );
     bp::file::remove(m_tempDir);
 }
@@ -33,10 +43,20 @@ FileServer::start()
 {
     std::stringstream boundTo;
     m_port = 0;
-
+    struct mg_context * ctx = mg_create();
+    int nRet = mg_set_option( ctx, "ports", "0" );
+    if (nRet <= 0 || !mg_start(ctx)) {
+        mg_destroy(ctx);
+        return std::string();
+    }
+    m_port = nRet;
     boundTo << "127.0.0.1:" << m_port;
-
     BPCLOG_INFO_STRM( "Bound to: " << boundTo.str() );
+    m_ctx = ctx;
+
+    // now set up the callback function
+    mg_set_uri_callback(ctx, "*", (mg_callback_t) mongooseCallback, (void *) this);
+    
     return boundTo.str();
 }
 
@@ -50,8 +70,11 @@ FileServer::addFile(const bp::file::Path& path)
 
     uuid_generate(uuid);
     url << "http://127.0.0.1:" << m_port << "/" << uuid;
-    m_paths[uuid] = path;
-    
+    {
+        bp::sync::Lock lck(m_lock);
+        m_paths[uuid] = path;
+    }
+
     BPCLOG_DEBUG_STRM( "m_urls[" << uuid << "] = " << path.utf8() );
     return url.str();
 }
@@ -223,14 +246,16 @@ FileServer::getSlice(const bp::file::Path& path,
     return s;
 }
 
-/*
-bool
-FileServer::processRequest(const bp::http::Request & request,
-                           bp::http::Response & response)
+void
+FileServer::mongooseCallback(void * connPtr, void * requestPtr,
+                             void * user_data)
 {
-    std::string id = request.url.path();
+    struct mg_connection * conn = (struct mg_connection *) connPtr;
+    const struct mg_request_info * request = (const struct mg_request_info * ) requestPtr;
+    FileServer * self = (FileServer *) user_data;
+    
+    std::string id(request->uri);
     BPCLOG_INFO_STRM( "request.url.path = " << id );
-
     // drop the leading /
     id = id.substr(1, id.length()-1);
 
@@ -242,36 +267,63 @@ FileServer::processRequest(const bp::http::Request & request,
     }
 
     BPCLOG_INFO_STRM( "token '" << id << "' extracted from request path: "
-                      << request.url.path() );
+                      << request->uri );
 
-    std::map<std::string,bp::file::Path>::const_iterator it;
-    it = m_paths.find(id);
-
-    if (it == m_paths.end()) {
-        BPCLOG_WARN( "Requested id not found." );
-        return false;
-    }
-
-    // read file
-    std::string body;
-    if (!bp::strutil::loadFromFile(it->second, body)) {
-        BPCLOG_WARN( "loadFromFile failed." );
-        return false;
+    bp::file::Path path;
+    {
+        bp::sync::Lock lck(self->m_lock);
+        std::map<std::string,bp::file::Path>::const_iterator it;
+        it = self->m_paths.find(id);
+        if (it == self->m_paths.end()) {
+            BPCLOG_WARN( "Requested id not found." );
+            mg_printf(conn, "HTTP/1.0 404 Not Found\r\n\r\n");
+            return;
+        }
+        path = it->second;
     }
     
-    response.body.append(body);
+
+    // read file and output to connection
+    FILE * f = ft::fopen_binary_read(path.utf8());
+    if (f == NULL) {
+        BPCLOG_WARN_STRM( "Couldn't open file for reading " << path );
+        mg_printf(conn, "HTTP/1.0 500 Internal Error\r\n\r\n");
+        return;
+    }
+
+    long len;
+    if (0 != fseek(f, 0, SEEK_END) ||
+        (len = ftell(f)) < 0 ||
+        0 != fseek(f, 0, SEEK_SET))
+    {
+        BPCLOG_WARN_STRM( "Couldn't determine file length: " << path );
+        mg_printf(conn, "HTTP/1.0 500 Internal Error\r\n\r\n");
+        return;
+    }
+
+    mg_printf(conn, "Content-Length: %ld\r\n", len);
+    mg_printf(conn, "Server: FileAccess BrowserPlus service\r\n");
 
     // set mime type header
     {
         std::set<std::string> mts;
-        mts = bp::file::mimeTypes(it->second);
+        mts = bp::file::mimeTypes(path);
         if (mts.size() > 0) {
-            response.headers.add(bp::http::Headers::ksContentType,
-                                 *(mts.begin()));
+            mg_printf(conn, "Content-Type: %s\r\n", mts.begin()->c_str());
+        }
+    }
+    mg_printf(conn, "\r\n");    
+
+    char buf[1024 * 32];
+    size_t rd;
+    while ((rd = fread(buf, sizeof(char), sizeof(buf), f)) > 0) {
+        if (rd != (size_t) mg_write(conn, buf, rd)) {
+            BPCLOG_WARN( "partial write detected!  client left?" );
+            fclose(f);
+            return;
         }
     }
 
     BPCLOG_DEBUG( "Request processed." );
-    return true;
+    return;
 }
-*/

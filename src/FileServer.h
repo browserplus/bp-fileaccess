@@ -9,6 +9,7 @@
 #define __FILE_SERVER_H__
 
 #include "bp-file/bpfile.h"
+#include "util/bpsync.hh"
 
 #include "ResourceLimit.h"
 
@@ -48,10 +49,16 @@ class FileServer
                             size_t offset, size_t size);
 
   private:
+
+    static void mongooseCallback(void * connPtr, void * requestPtr,
+                                 void * user_data);
+
     unsigned short int m_port;
     std::map<std::string, bp::file::Path> m_paths;
     bp::file::Path m_tempDir;
     ResourceLimit m_limit;
+    void * m_ctx;
+    bp::sync::Mutex m_lock;
 };
 
 #endif
