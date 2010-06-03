@@ -85,7 +85,7 @@ readFileContents(const bp::file::Path & path,
 
     // now validate offset and size
     fstream.seekg (0, std::ios::end);
-    if (offset > fstream.tellg()) {
+    if ((size_t) offset > fstream.tellg()) {
         err = "offset out of range";        
         return NULL;
     }
@@ -222,7 +222,7 @@ BPPInvoke(void * instance, const char * funcName,
     else if (!strcmp(funcName, "slice"))
     {
         BPCLOG_INFO( "slice" );
-        size_t offset = 0, size = -1;
+        size_t offset = 0, size = (size_t) -1;
 
         if (args->has("offset", BPTInteger)) {
             offset = (int) (long long) *(args->get("offset"));            

@@ -49,7 +49,7 @@ FileServer::start()
         mg_destroy(ctx);
         return std::string();
     }
-    m_port = nRet;
+    m_port = (unsigned short) nRet;
     boundTo << "127.0.0.1:" << m_port;
     BPCLOG_INFO_STRM( "Bound to: " << boundTo.str() );
     m_ctx = ctx;

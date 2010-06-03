@@ -83,20 +83,21 @@ IF (WIN32)
    # Visual Studio does some autolink magic with boost, no need
    # to specify library
    SET (OS_SRCS util/bpsync_Windows.cpp)
+   SET (OS_LIBS Winmm Ws2_32 mswsock rpcrt4 psapi)
 ELSE()
    SET(BOOST_LIBS "boost_filesystem" "boost_system")
    SET (OS_SRCS util/bpsync_UNIX.cpp)
+
+   IF (APPLE)
+       # need carbon headers and library
+       FIND_LIBRARY(CARBON_LIBRARY Carbon)
+       MARK_AS_ADVANCED(CARBON_LIBRARY)
+       SET(OS_LIBS ${CARBON_LIBRARY})
+   ENDIF()
 ENDIF ()
 
 ADD_LIBRARY(${serviceName} MODULE ${EXT_SRCS} ${SRCS} ${OS_SRCS} ${HDRS})
 
-SET(OS_LIBS)
-IF (APPLE)
-   # need carbon headers and library
-   FIND_LIBRARY(CARBON_LIBRARY Carbon)
-   MARK_AS_ADVANCED(CARBON_LIBRARY)
-   SET(OS_LIBS ${CARBON_LIBRARY})
-ENDIF() 
 
 TARGET_LINK_LIBRARIES(${serviceName} mongoose_s bpfile_s ${BOOST_LIBS} ${OS_LIBS})
 
