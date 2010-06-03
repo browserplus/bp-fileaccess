@@ -24,7 +24,7 @@ class TestFileAccess < Test::Unit::TestCase
 
   def test_read
     # a simple test of the read() function, read a text file and a binary file
-    want = File.read @textfile_path
+    want = File.open(@textfile_path, "rb") { |f| f.read }
     got = @s.read({ 'file' => @textfile_uri })
     assert_equal want, got
 
@@ -32,12 +32,12 @@ class TestFileAccess < Test::Unit::TestCase
     assert_raise(RuntimeError) { got = @s.read({ 'file' => @binfile_uri }) }
 
     # partial read
-    want = File.read(@textfile_path, 25)
+    want = File.open(@textfile_path, "rb") { |f| f.read(25) }
     got = @s.read({ 'file' => @textfile_uri, 'size' => 25 })
     assert_equal want, got
 
     # partial read with offset
-    want = File.read(@textfile_path, 25)[5, 20]
+    want = File.open(@textfile_path, "rb") { |f| f.read(25) }[5, 20]
     got = @s.read({ 'file' => @textfile_uri, 'size' => 20, 'offset' => 5 })
     assert_equal want, got
 
@@ -51,16 +51,16 @@ class TestFileAccess < Test::Unit::TestCase
   end
 
   def test_geturl
-    want = File.read(@textfile_path)
+    want = File.open(@textfile_path, "rb") { |f| f.read }
     url = @s.getURL({ 'file' => @textfile_uri })
     got = open(url) { |f| f.read }
-    assert_equal want, got
+    assert_equal want.gsub("\r\n","\n"), got.gsub("\r\n","\n")
 
     # yeah, same thing a second time
-    want = File.read(@textfile_path)
+    want = File.open(@textfile_path, "rb") { |f| f.read }
     url = @s.getURL({ 'file' => @textfile_uri })
     got = open(url) { |f| f.read }
-    assert_equal want, got
+    assert_equal want.gsub("\r\n","\n"), got.gsub("\r\n","\n")
 
     #want = File.read(@binfile_path)
     #url = @s.getURL({ 'file' => @binfile_uri })
