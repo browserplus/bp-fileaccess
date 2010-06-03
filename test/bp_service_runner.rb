@@ -45,7 +45,7 @@ module BrowserPlus
     def allocate
       @srp.syswrite "allocate\n"
       str = mypread_raise(@srp, 3.0, /allocated/)
-      num = str.match(/^allocated: (\d+)/)[1]
+      num = str.match(/allocated: (\d+)/)[1]
       Instance.new(@srp, num)
     end
 
@@ -115,7 +115,8 @@ module BrowserPlus
       # always select the current instance
       @srp.syswrite "select #{@iid}\n"
       @srp.syswrite cmd
-      str = mypread(@srp, 10.0, /^spawned process|^error:|^".*"\n|^\}$|(?:^no such function: #{func.to_s}$)/m)
+      str = mypread(@srp, 4.0, /^(?:> )?spawned process|^(?: ?\> )?error:|^(?:> )?".*"\n|^\}$|(?:^(?:> )?no such function: #{func.to_s}$)/m)
+      str = str.gsub(/^\> /m, "").gsub(/^ \> /m, "").gsub(/^\>/m, "")
       raise str if str =~ /no such function: #{func.to_s}/ || str =~ /^error:/ || str =~ /^spawned/
       JSON.parse("[#{str}]")[0]
     end
