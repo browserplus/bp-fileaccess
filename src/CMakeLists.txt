@@ -90,7 +90,15 @@ ENDIF ()
 
 ADD_LIBRARY(${serviceName} MODULE ${EXT_SRCS} ${SRCS} ${OS_SRCS} ${HDRS})
 
-TARGET_LINK_LIBRARIES(${serviceName} mongoose_s bpfile_s ${BOOST_LIBS})
+SET(OS_LIBS)
+IF (APPLE)
+   # need carbon headers and library
+   FIND_LIBRARY(CARBON_LIBRARY Carbon)
+   MARK_AS_ADVANCED(CARBON_LIBRARY)
+   SET(OS_LIBS ${CARBON_LIBRARY})
+ENDIF() 
+
+TARGET_LINK_LIBRARIES(${serviceName} mongoose_s bpfile_s ${BOOST_LIBS} ${OS_LIBS})
 
 # create service directory
 FILE(MAKE_DIRECTORY ${outputDir})
