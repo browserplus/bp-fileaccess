@@ -73,8 +73,8 @@ SET(EXT_SRCS
   ${ServiceTools}/CppTools/src/bpserviceversion.cpp
 )
 
-SET(SRCS service.cpp littleuuid.cpp FileServer.cpp)
-SET(HDRS service.h littleuuid.h ResourceLimit.h FileServer.h)
+SET(SRCS service.cpp littleuuid.cpp FileServer.cpp util/fileutil.cpp)
+SET(HDRS service.h littleuuid.h ResourceLimit.h FileServer.h util/bpsync.hh util/fileutil.hh)
 
 # add required OS libs here
 SET(OSLIBS)
@@ -82,11 +82,13 @@ SET(OSLIBS)
 IF (WIN32)
    # Visual Studio does some autolink magic with boost, no need
    # to specify library
+   SET (OS_SRCS util/bpsync_Windows.cpp)
 ELSE()
    SET(BOOST_LIBS "boost_filesystem" "boost_system")
+   SET (OS_SRCS util/bpsync_UNIX.cpp)
 ENDIF ()
 
-ADD_LIBRARY(${serviceName} MODULE ${EXT_SRCS} ${SRCS} ${HDRS})
+ADD_LIBRARY(${serviceName} MODULE ${EXT_SRCS} ${SRCS} ${OS_SRCS} ${HDRS})
 
 TARGET_LINK_LIBRARIES(${serviceName} mongoose_s bpfile_s ${BOOST_LIBS})
 

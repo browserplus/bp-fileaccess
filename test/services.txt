@@ -1,0 +1,1308 @@
+[
+  {
+    "name": "PublishSubscribe",
+    "versionString": "1.0.0",
+    "os": "ind",
+    "size": 5114,
+    "documentation": "A cross document message service that allows JavaScript to send and receive messages between web pages within one or more browsers (cross document + cross process).",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": "4.2.5"
+    }
+  },
+  {
+    "name": "Machsend",
+    "versionString": "1.5.3",
+    "os": "ind",
+    "size": 89292,
+    "documentation": "Efficiently transfer files on machsend.com (provided by Lead Thinking, LLC)",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": ""
+    }
+  },
+  {
+    "name": "LogAccess",
+    "versionString": "1.0.0",
+    "os": "osx",
+    "size": 84100,
+    "documentation": "Lets you get file handles for BrowserPlus log files from a webpage.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "LogAccess",
+    "versionString": "1.0.0",
+    "os": "win32",
+    "size": 79089,
+    "documentation": "Lets you get file handles for BrowserPlus log files from a webpage.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "PStore",
+    "versionString": "1.0.9",
+    "os": "ind",
+    "size": 4497,
+    "documentation": "Provides a persistent store.",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": ""
+    }
+  },
+  {
+    "name": "PStore",
+    "versionString": "1.0.10",
+    "os": "ind",
+    "size": 4827,
+    "documentation": "Provides a persistent store.",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": ""
+    }
+  },
+  {
+    "name": "PStore",
+    "versionString": "1.0.8",
+    "os": "ind",
+    "size": 2660,
+    "documentation": "Provides a persistent store.",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": ""
+    }
+  },
+  {
+    "name": "FlickrUploader",
+    "versionString": "2.0.14",
+    "os": "ind",
+    "size": 11270,
+    "documentation": "Provides an interface to the Flickr Authorization and Upload API.",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": ""
+    }
+  },
+  {
+    "name": "FlickrUploader",
+    "versionString": "2.0.11",
+    "os": "ind",
+    "size": 9699,
+    "documentation": "Provides an interface to the Flickr Authorization and Upload API.",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": ""
+    }
+  },
+  {
+    "name": "FlickrUploader",
+    "versionString": "2.0.13",
+    "os": "ind",
+    "size": 9812,
+    "documentation": "Provides an interface to the Flickr Authorization and Upload API.",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": ""
+    }
+  },
+  {
+    "name": "FlickrUploader",
+    "versionString": "2.0.10",
+    "os": "ind",
+    "size": 8826,
+    "documentation": "Provides an interface to the Flickr Authorization and Upload API.",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": ""
+    }
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.2",
+    "os": "osx",
+    "size": 269336,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.2",
+    "os": "win32",
+    "size": 222294,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.10",
+    "os": "osx",
+    "size": 287050,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.10",
+    "os": "win32",
+    "size": 232415,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.9",
+    "os": "osx",
+    "size": 304799,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.9",
+    "os": "win32",
+    "size": 232496,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.4.1",
+    "os": "osx",
+    "size": 309521,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.4.1",
+    "os": "win32",
+    "size": 239331,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.12",
+    "os": "osx",
+    "size": 291526,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.12",
+    "os": "win32",
+    "size": 235178,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.1.8",
+    "os": "osx",
+    "size": 124540,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.1.8",
+    "os": "win32",
+    "size": 180935,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.1.9",
+    "os": "osx",
+    "size": 231547,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.1.9",
+    "os": "win32",
+    "size": 164425,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.4",
+    "os": "osx",
+    "size": 272776,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.4",
+    "os": "win32",
+    "size": 223339,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.5",
+    "os": "osx",
+    "size": 330354,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.5",
+    "os": "win32",
+    "size": 223456,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.1",
+    "os": "osx",
+    "size": 268745,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.1",
+    "os": "win32",
+    "size": 221228,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.11",
+    "os": "osx",
+    "size": 291495,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.11",
+    "os": "win32",
+    "size": 234906,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.6",
+    "os": "osx",
+    "size": 279378,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Uploader",
+    "versionString": "3.2.6",
+    "os": "win32",
+    "size": 223546,
+    "documentation": "This service lets you upload files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "FileTransfer",
+    "versionString": "1.1.1",
+    "os": "osx",
+    "size": 316512,
+    "documentation": "This service lets you upload or download files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "FileTransfer",
+    "versionString": "1.1.1",
+    "os": "win32",
+    "size": 243210,
+    "documentation": "This service lets you upload or download files faster and easier than before.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "FileChecksum",
+    "versionString": "1.0.7",
+    "os": "ind",
+    "size": 2233,
+    "documentation": "Allows client side MD5 of user selected files.",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": ""
+    }
+  },
+  {
+    "name": "FileChecksum",
+    "versionString": "1.0.9",
+    "os": "ind",
+    "size": 3917,
+    "documentation": "Allows client side MD5 of user selected files.",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": ""
+    }
+  },
+  {
+    "name": "FileChecksum",
+    "versionString": "1.0.8",
+    "os": "ind",
+    "size": 3623,
+    "documentation": "Allows client side MD5 of user selected files.",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": ""
+    }
+  },
+  {
+    "name": "ImageAlter",
+    "versionString": "3.0.0",
+    "os": "osx",
+    "size": 991733,
+    "documentation": "Alter images locally and return a temporary file handle to them.  Based on ImageMagick.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "ImageAlter",
+    "versionString": "3.0.0",
+    "os": "win32",
+    "size": 1450597,
+    "documentation": "Alter images locally and return a temporary file handle to them.  Based on ImageMagick.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "ImageAlter",
+    "versionString": "2.0.4",
+    "os": "osx",
+    "size": 916386,
+    "documentation": "Alter images locally and return a temporary file handle to them.  Based on ImageMagick.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "ImageAlter",
+    "versionString": "2.0.4",
+    "os": "win32",
+    "size": 1416683,
+    "documentation": "Alter images locally and return a temporary file handle to them.  Based on ImageMagick.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "ImageAlter",
+    "versionString": "1.2.9",
+    "os": "osx",
+    "size": 937300,
+    "documentation": "A service based on ImageMagick to alter images locally and and serve them over HTTP.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "ImageAlter",
+    "versionString": "1.2.9",
+    "os": "win32",
+    "size": 1738656,
+    "documentation": "A service based on ImageMagick to alter images locally and and serve them over HTTP.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "ImageAlter",
+    "versionString": "2.1.3",
+    "os": "osx",
+    "size": 919576,
+    "documentation": "Alter images locally and return a temporary file handle to them.  Based on ImageMagick.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "ImageAlter",
+    "versionString": "2.1.3",
+    "os": "win32",
+    "size": 1406237,
+    "documentation": "Alter images locally and return a temporary file handle to them.  Based on ImageMagick.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "ImageAlter",
+    "versionString": "3.0.2",
+    "os": "osx",
+    "size": 1027741,
+    "documentation": "Alter images locally and return a temporary file handle to them.  Based on ImageMagick.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "ImageAlter",
+    "versionString": "3.0.2",
+    "os": "win32",
+    "size": 1451180,
+    "documentation": "Alter images locally and return a temporary file handle to them.  Based on ImageMagick.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "ImageAlter",
+    "versionString": "4.0.4",
+    "os": "osx",
+    "size": 675613,
+    "documentation": "Implements client side Image manipulation",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "ImageAlter",
+    "versionString": "4.0.4",
+    "os": "win32",
+    "size": 722403,
+    "documentation": "Implements client side Image manipulation",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "ImageAlter",
+    "versionString": "2.1.4",
+    "os": "osx",
+    "size": 998719,
+    "documentation": "Alter images locally and return a temporary file handle to them.  Based on ImageMagick.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "ImageAlter",
+    "versionString": "2.1.4",
+    "os": "win32",
+    "size": 1450812,
+    "documentation": "Alter images locally and return a temporary file handle to them.  Based on ImageMagick.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "TextToSpeech",
+    "versionString": "1.0.7",
+    "os": "osx",
+    "size": 3877,
+    "documentation": "Interfaces operating system provided text to speech facilities.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "TextToSpeech",
+    "versionString": "1.0.7",
+    "os": "win32",
+    "size": 24256,
+    "documentation": "Interfaces operating system provided text to speech facilities.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "TextToSpeech",
+    "versionString": "1.0.9",
+    "os": "osx",
+    "size": 5164,
+    "documentation": "Interfaces operating system provided text to speech facilities.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "TextToSpeech",
+    "versionString": "1.0.9",
+    "os": "win32",
+    "size": 25023,
+    "documentation": "Interfaces operating system provided text to speech facilities.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "TextToSpeech",
+    "versionString": "1.0.8",
+    "os": "osx",
+    "size": 7587,
+    "documentation": "Interfaces operating system provided text to speech facilities.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "TextToSpeech",
+    "versionString": "1.0.8",
+    "os": "win32",
+    "size": 25321,
+    "documentation": "Interfaces operating system provided text to speech facilities.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "RubyInterpreter",
+    "versionString": "4.2.6",
+    "os": "osx",
+    "size": 1691095,
+    "documentation": "Allows other services to be written in Ruby.",
+    "ServiceType": "provider",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "RubyInterpreter",
+    "versionString": "4.2.6",
+    "os": "win32",
+    "size": 1289618,
+    "documentation": "Allows other services to be written in Ruby.",
+    "ServiceType": "provider",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "RubyInterpreter",
+    "versionString": "4.2.5",
+    "os": "osx",
+    "size": 1184008,
+    "documentation": "Allows other services to be written in Ruby.",
+    "ServiceType": "provider",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "RubyInterpreter",
+    "versionString": "4.2.5",
+    "os": "win32",
+    "size": 1297474,
+    "documentation": "Allows other services to be written in Ruby.",
+    "ServiceType": "provider",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Downloader",
+    "versionString": "1.0.0",
+    "os": "ind",
+    "size": 2898,
+    "documentation": "Download remote files over HTTP to a temporary location and return file handles to javascript.",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": ""
+    }
+  },
+  {
+    "name": "Archiver",
+    "versionString": "1.0.5",
+    "os": "osx",
+    "size": 153886,
+    "documentation": "Lets you archive and optionally compress files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Archiver",
+    "versionString": "1.0.5",
+    "os": "win32",
+    "size": 163999,
+    "documentation": "Lets you archive and optionally compress files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Archiver",
+    "versionString": "1.0.4",
+    "os": "osx",
+    "size": 169267,
+    "documentation": "Lets you archive files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Archiver",
+    "versionString": "1.0.4",
+    "os": "win32",
+    "size": 162949,
+    "documentation": "Lets you archive files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Archiver",
+    "versionString": "1.0.3",
+    "os": "osx",
+    "size": 146550,
+    "documentation": "Lets you archive files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Archiver",
+    "versionString": "1.0.3",
+    "os": "win32",
+    "size": 162851,
+    "documentation": "Lets you archive files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Archiver",
+    "versionString": "1.1.0",
+    "os": "osx",
+    "size": 149877,
+    "documentation": "Lets you archive and optionally compress files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Archiver",
+    "versionString": "1.1.0",
+    "os": "win32",
+    "size": 166414,
+    "documentation": "Lets you archive and optionally compress files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "UUID",
+    "versionString": "1.0.4",
+    "os": "osx",
+    "size": 183935,
+    "documentation": "Generate universally unique identifiers.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "UUID",
+    "versionString": "1.0.4",
+    "os": "win32",
+    "size": 98489,
+    "documentation": "Generate universally unique identifiers.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "UUID",
+    "versionString": "1.0.3",
+    "os": "osx",
+    "size": 64843,
+    "documentation": "Generate universally unique identifiers.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "UUID",
+    "versionString": "1.0.3",
+    "os": "win32",
+    "size": 96296,
+    "documentation": "Generate universally unique identifiers.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "UUID",
+    "versionString": "1.0.2",
+    "os": "osx",
+    "size": 52064,
+    "documentation": "Generate universally unique identifiers.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "UUID",
+    "versionString": "1.0.2",
+    "os": "win32",
+    "size": 106354,
+    "documentation": "Generate universally unique identifiers.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "FileAccess",
+    "versionString": "1.0.5",
+    "os": "osx",
+    "size": 115138,
+    "documentation": "Access the contents of files that the user has selected.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "FileAccess",
+    "versionString": "1.0.5",
+    "os": "win32",
+    "size": 165881,
+    "documentation": "Access the contents of files that the user has selected.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "FileAccess",
+    "versionString": "1.0.6",
+    "os": "osx",
+    "size": 182546,
+    "documentation": "Access the contents of files that the user has selected.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "FileAccess",
+    "versionString": "1.0.6",
+    "os": "win32",
+    "size": 154491,
+    "documentation": "Access the contents of files that the user has selected.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "FileAccess",
+    "versionString": "1.0.11",
+    "os": "osx",
+    "size": 223823,
+    "documentation": "Access the contents of files that the user has selected.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "FileAccess",
+    "versionString": "1.0.11",
+    "os": "win32",
+    "size": 171534,
+    "documentation": "Access the contents of files that the user has selected.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "FileAccess",
+    "versionString": "2.0.1",
+    "os": "osx",
+    "size": 253303,
+    "documentation": "Access the contents of files that the user has selected.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "FileAccess",
+    "versionString": "2.0.1",
+    "os": "win32",
+    "size": 180164,
+    "documentation": "Access the contents of files that the user has selected.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "FileAccess",
+    "versionString": "1.0.9",
+    "os": "osx",
+    "size": 223180,
+    "documentation": "Access the contents of files that the user has selected.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "FileAccess",
+    "versionString": "1.0.9",
+    "os": "win32",
+    "size": 171642,
+    "documentation": "Access the contents of files that the user has selected.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "FileAccess",
+    "versionString": "1.0.8",
+    "os": "osx",
+    "size": 210248,
+    "documentation": "Access the contents of files that the user has selected.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "FileAccess",
+    "versionString": "1.0.8",
+    "os": "win32",
+    "size": 163717,
+    "documentation": "Access the contents of files that the user has selected.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "JSONRequest",
+    "versionString": "1.0.11",
+    "os": "ind",
+    "size": 14165,
+    "documentation": "Allows secure cross-domain JSON requests, inspired by http://www.json.org/JSONRequest.html.",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": ""
+    }
+  },
+  {
+    "name": "JSONRequest",
+    "versionString": "1.0.12",
+    "os": "ind",
+    "size": 15456,
+    "documentation": "Allows secure cross-domain JSON requests, inspired by http://www.json.org/JSONRequest.html.",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": ""
+    }
+  },
+  {
+    "name": "JSONRequest",
+    "versionString": "1.0.13",
+    "os": "ind",
+    "size": 15639,
+    "documentation": "Allows secure cross-domain JSON requests, inspired by http://www.json.org/JSONRequest.html.",
+    "ServiceType": "dependent",
+    "ServiceRequires": {
+      "Name": "RubyInterpreter",
+      "Version": "4",
+      "Minversion": ""
+    }
+  },
+  {
+    "name": "Tar",
+    "versionString": "1.0.0",
+    "os": "osx",
+    "size": 76717,
+    "documentation": "Lets you tar files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Tar",
+    "versionString": "1.0.0",
+    "os": "win32",
+    "size": 110641,
+    "documentation": "Lets you tar files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Tar",
+    "versionString": "1.0.9",
+    "os": "osx",
+    "size": 100845,
+    "documentation": "Lets you tar files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Tar",
+    "versionString": "1.0.9",
+    "os": "win32",
+    "size": 128024,
+    "documentation": "Lets you tar files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Tar",
+    "versionString": "1.0.10",
+    "os": "osx",
+    "size": 107988,
+    "documentation": "Lets you tar files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Tar",
+    "versionString": "1.0.10",
+    "os": "win32",
+    "size": 128420,
+    "documentation": "Lets you tar files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Motion",
+    "versionString": "0.1.9",
+    "os": "osx",
+    "size": 186523,
+    "documentation": "Use the hardware based motion sensor or mouse position to attain the (virtual) orientation of the computing device.  Mouse position allows a resonable fallback for machines that don't contain an accesible motion sensor.  Inspired by Amit Singh (http://www.kernelthread.com/software/ams/).",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Motion",
+    "versionString": "0.1.9",
+    "os": "win32",
+    "size": 100734,
+    "documentation": "Use the hardware based motion sensor or mouse position to attain the (virtual) orientation of the computing device.  Mouse position allows a resonable fallback for machines that don't contain an accesible motion sensor.  Inspired by Amit Singh (http://www.kernelthread.com/software/ams/).",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Motion",
+    "versionString": "0.1.7",
+    "os": "osx",
+    "size": 54291,
+    "documentation": "Use the hardware based motion sensor or mouse position to attain the (virtual) orientation of the computing device.  Mouse position allows a resonable fallback for machines that don't contain an accesible motion sensor.  Inspired by Amit Singh (http://www.kernelthread.com/software/ams/).",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Motion",
+    "versionString": "0.1.7",
+    "os": "win32",
+    "size": 107594,
+    "documentation": "Use the hardware based motion sensor or mouse position to attain the (virtual) orientation of the computing device.  Mouse position allows a resonable fallback for machines that don't contain an accesible motion sensor.  Inspired by Amit Singh (http://www.kernelthread.com/software/ams/).",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Motion",
+    "versionString": "0.1.8",
+    "os": "osx",
+    "size": 85295,
+    "documentation": "Use the hardware based motion sensor or mouse position to attain the (virtual) orientation of the computing device.  Mouse position allows a resonable fallback for machines that don't contain an accesible motion sensor.  Inspired by Amit Singh (http://www.kernelthread.com/software/ams/).",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Motion",
+    "versionString": "0.1.8",
+    "os": "win32",
+    "size": 98855,
+    "documentation": "Use the hardware based motion sensor or mouse position to attain the (virtual) orientation of the computing device.  Mouse position allows a resonable fallback for machines that don't contain an accesible motion sensor.  Inspired by Amit Singh (http://www.kernelthread.com/software/ams/).",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Notify",
+    "versionString": "2.0.16",
+    "os": "osx",
+    "size": 220091,
+    "documentation": "Post notifications to the desktop.  Supports Growl on Mac OS X, if installed.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Notify",
+    "versionString": "2.0.16",
+    "os": "win32",
+    "size": 1233487,
+    "documentation": "Post notifications to the desktop.  Supports Growl on Mac OS X, if installed.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Notify",
+    "versionString": "2.0.11",
+    "os": "osx",
+    "size": 83913,
+    "documentation": "Post notifications to the desktop.  Supports Growl on Mac OS X, if installed.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Notify",
+    "versionString": "2.0.11",
+    "os": "win32",
+    "size": 703779,
+    "documentation": "Post notifications to the desktop.  Supports Growl on Mac OS X, if installed.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Notify",
+    "versionString": "2.0.13",
+    "os": "osx",
+    "size": 212594,
+    "documentation": "Post notifications to the desktop.  Supports Growl on Mac OS X, if installed.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Notify",
+    "versionString": "2.0.13",
+    "os": "win32",
+    "size": 651176,
+    "documentation": "Post notifications to the desktop.  Supports Growl on Mac OS X, if installed.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Notify",
+    "versionString": "2.0.15",
+    "os": "osx",
+    "size": 219753,
+    "documentation": "Post notifications to the desktop.  Supports Growl on Mac OS X, if installed.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Notify",
+    "versionString": "2.0.15",
+    "os": "win32",
+    "size": 651916,
+    "documentation": "Post notifications to the desktop.  Supports Growl on Mac OS X, if installed.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Notify",
+    "versionString": "2.0.12",
+    "os": "osx",
+    "size": 166076,
+    "documentation": "Post notifications to the desktop.  Supports Growl on Mac OS X, if installed.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Notify",
+    "versionString": "2.0.12",
+    "os": "win32",
+    "size": 645874,
+    "documentation": "Post notifications to the desktop.  Supports Growl on Mac OS X, if installed.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Zipper",
+    "versionString": "1.0.4",
+    "os": "osx",
+    "size": 182067,
+    "documentation": "Lets you zip up files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Zipper",
+    "versionString": "1.0.4",
+    "os": "win32",
+    "size": 149945,
+    "documentation": "Lets you zip up files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Zipper",
+    "versionString": "2.1.2",
+    "os": "osx",
+    "size": 125253,
+    "documentation": "Lets you archive files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Zipper",
+    "versionString": "2.1.2",
+    "os": "win32",
+    "size": 149327,
+    "documentation": "Lets you archive files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Zipper",
+    "versionString": "1.0.7",
+    "os": "osx",
+    "size": 81706,
+    "documentation": "Lets you zip up files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Zipper",
+    "versionString": "1.0.7",
+    "os": "win32",
+    "size": 120101,
+    "documentation": "Lets you zip up files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Zipper",
+    "versionString": "1.0.3",
+    "os": "osx",
+    "size": 127497,
+    "documentation": "Lets you zip up files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Zipper",
+    "versionString": "1.0.3",
+    "os": "win32",
+    "size": 162920,
+    "documentation": "Lets you zip up files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Zipper",
+    "versionString": "1.0.6",
+    "os": "osx",
+    "size": 81155,
+    "documentation": "Lets you zip up files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Zipper",
+    "versionString": "1.0.6",
+    "os": "win32",
+    "size": 119868,
+    "documentation": "Lets you zip up files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Zipper",
+    "versionString": "2.1.1",
+    "os": "osx",
+    "size": 140818,
+    "documentation": "Lets you archive files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Zipper",
+    "versionString": "2.1.1",
+    "os": "win32",
+    "size": 148739,
+    "documentation": "Lets you archive files and directories.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Directory",
+    "versionString": "2.0.2",
+    "os": "osx",
+    "size": 100273,
+    "documentation": "Lets you list directory contents and invoke JavaScript .callbacks for the contained items.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Directory",
+    "versionString": "2.0.2",
+    "os": "win32",
+    "size": 110617,
+    "documentation": "Lets you list directory contents and invoke JavaScript .callbacks for the contained items.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Directory",
+    "versionString": "2.0.4",
+    "os": "osx",
+    "size": 86016,
+    "documentation": "Lets you list directory contents and invoke JavaScript .callbacks for the contained items.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "Directory",
+    "versionString": "2.0.4",
+    "os": "win32",
+    "size": 110957,
+    "documentation": "Lets you list directory contents and invoke JavaScript .callbacks for the contained items.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "LZMA",
+    "versionString": "1.0.0",
+    "os": "osx",
+    "size": 41671,
+    "documentation": "Perform LZMA (de)compression.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "LZMA",
+    "versionString": "1.0.0",
+    "os": "win32",
+    "size": 90984,
+    "documentation": "Perform LZMA (de)compression.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "LZMA",
+    "versionString": "1.0.2",
+    "os": "osx",
+    "size": 39236,
+    "documentation": "Perform LZMA (de)compression.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "LZMA",
+    "versionString": "1.0.2",
+    "os": "win32",
+    "size": 91039,
+    "documentation": "Perform LZMA (de)compression.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "LZMA",
+    "versionString": "1.0.1",
+    "os": "osx",
+    "size": 38795,
+    "documentation": "Perform LZMA (de)compression.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  },
+  {
+    "name": "LZMA",
+    "versionString": "1.0.1",
+    "os": "win32",
+    "size": 91051,
+    "documentation": "Perform LZMA (de)compression.",
+    "ServiceType": "standalone",
+    "ServiceAPIVersion": 4
+  }
+]

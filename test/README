@@ -1,0 +1,11 @@
+bp_service_runner.rb is a little ruby library that drives the ServiceRunner
+binary programatically.
+
+json/ is ruby only json parsing for 1.8 which doesn't have it built in
+
+runtests.rb is a ruby script that uses the above as well as test/unit to
+implement tests of the FileAccess service
+
+services.txt is a test text file
+
+service.bin is a test binary file
