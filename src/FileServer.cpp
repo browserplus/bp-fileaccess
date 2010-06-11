@@ -315,7 +315,7 @@ FileServer::mongooseCallback(void * connPtr, void * requestPtr,
 
     // set mime type header
     {
-        std::set<std::string> mts;
+        std::vector<std::string> mts;
         mts = bp::file::mimeTypes(path);
         if (mts.size() > 0) {
             mg_printf(conn, "Content-Type: %s\r\n", mts.begin()->c_str());
