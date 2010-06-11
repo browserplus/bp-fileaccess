@@ -337,7 +337,7 @@ BPFunctionDefinition s_functions[] = {
 // a description of this corelet.
 BPCoreletDefinition s_coreletDef = {
     "FileAccess",
-    2, 0, 2,
+    2, 0, 3,
     "Access the contents of files that the user has selected.",
     sizeof(s_functions)/sizeof(s_functions[0]),
     s_functions
