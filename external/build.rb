@@ -8,7 +8,8 @@ $order = {
   :packages => [
                 "mongoose",
                 "boost",
-                "bp-file"
+                "bp-file",
+                "service_testing"
                ],
   :verbose => true,
   :use_source => {
