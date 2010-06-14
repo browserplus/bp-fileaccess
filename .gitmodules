@@ -3,7 +3,7 @@
 	url = git://github.com/browserplus/bp-service-tools.git
 [submodule "external/bakery"]
 	path = external/bakery
-	url = git://github.com/lloyd/bakery.git
+	url = git://github.com/browserplus/bakery.git
 [submodule "external/bp-file"]
 	path = external/bp-file
 	url = git://github.com/browserplus/bp-file.git
