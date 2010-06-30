@@ -1,7 +1,7 @@
-XXX: this service needs some updated documentation and should be 
-ported to the bakery.  Here's roughly how to get it building today
+XXX: this service needs some updated documentation.  
+XXX: Here's roughly how to get it building today
 
-1. git clone bp-github:browserplus/bp-fileaccess
+1. git clone git://github.com/browserplus/bp-fileaccess
 2. cd bp-fileaccess
 3. git submodule init && git submodule update
 4. mkdir src/build
