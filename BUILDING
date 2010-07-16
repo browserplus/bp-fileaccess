@@ -6,5 +6,5 @@ XXX: Here's roughly how to get it building today
 3. git submodule init && git submodule update
 4. mkdir src/build
 5. cd src/build
-6. cmake ..
-7. make
+6. cmake ..  (cmake -G "Visual Studio 9 2008" .. on Windows)
+7. make  (devenv FileAccessService.sln on Windows)
