@@ -4,7 +4,7 @@ topDir = File.dirname(__FILE__)
 require File.join(topDir, "bakery/ports/bakery")
 
 $order = {
-  :output_dir => File.join(File.dirname(__FILE__), "built"),
+  :output_dir => File.join(File.dirname(__FILE__), "dist"),
   :packages => [
                 "mongoose",
                 "boost",

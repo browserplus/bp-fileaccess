@@ -1,15 +1,21 @@
 #!/usr/bin/env ruby
 
 require File.join(File.dirname(File.dirname(File.expand_path(__FILE__))),
-                  'external/built/share/service_testing/bp_service_runner.rb')
+                  'external/dist/share/service_testing/bp_service_runner.rb')
 require 'uri'
 require 'test/unit'
 require 'open-uri'
 
 class TestFileAccess < Test::Unit::TestCase
   def setup
-    curDir = File.dirname(__FILE__)
-    pathToService = File.join(curDir, "..", "src", "build", "FileAccess")
+    # arguments are a string that must match the test name
+    subdir = 'build/FileAccess'
+    if ENV.key?('BP_OUTPUT_DIR')
+      subdir = ENV['BP_OUTPUT_DIR']
+    end
+    curDir = File.dirname(File.expand_path(__FILE__))
+    pathToService = File.join(curDir, "../#{subdir}")
+
     @s = BrowserPlus::Service.new(pathToService)
 
     @binfile_path = File.expand_path(File.join(curDir, "service.bin"))
