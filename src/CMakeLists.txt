@@ -118,10 +118,11 @@ IF (APPLE)
                      COMMAND strip -x \"${outputDir}/${ServiceLibrary}\")
 ENDIF (APPLE)
 
-# a custom step to build latest externals
-SET (pathToExtBuildRb "${CMAKE_CURRENT_SOURCE_DIR}/../external/build.rb")
+# Pre-build step, build our externals
+#
 ADD_CUSTOM_TARGET(
-    BuildExternals ALL
-    COMMAND ruby ${pathToExtBuildRb}
-    COMMENT "Build 3rd party dependencies")
-ADD_DEPENDENCIES( ${serviceName} BuildExternals )
+    ${serviceName}Externals ALL
+    COMMAND ruby build.rb
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../external"
+    COMMENT Building externals...)
+ADD_DEPENDENCIES( ${serviceName} ${serviceName}Externals )

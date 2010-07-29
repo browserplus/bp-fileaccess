@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
-topDir = File.dirname(__FILE__)
-require File.join(topDir, "bakery/ports/bakery")
+require "bakery/ports/bakery"
 
+topDir = File.dirname(File.expand_path(__FILE__));
 $order = {
-  :output_dir => File.join(File.dirname(__FILE__), "dist"),
+  :output_dir => File.join(topDir, "dist"),
   :packages => [
                 "mongoose",
                 "boost",
