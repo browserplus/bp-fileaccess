@@ -56,14 +56,14 @@ ENDIF ()
 SET(ServiceTools ${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools)
 
 INCLUDE_DIRECTORIES(
-  "${CMAKE_CURRENT_SOURCE_DIR}/../external/built/include"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../external/dist/include"
   "${ServiceTools}/CppTools/external/bpsdk/include"
   "${ServiceTools}/CppTools/src"
 )
 
 LINK_DIRECTORIES(
-  "${CMAKE_CURRENT_SOURCE_DIR}/../external/built/lib"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../external/built/lib/${CMAKE_BUILD_TYPE}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../external/dist/lib"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../external/dist/lib/${CMAKE_BUILD_TYPE}"
 )
 
 SET(EXT_SRCS
