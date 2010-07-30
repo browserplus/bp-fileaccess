@@ -1,6 +1,6 @@
-/.gitsubmodules
 *~
-/build
-/src/build
-/external/built
-
+/build/
+/build_debug/
+/build_release/
+/external/dist/
+/test/runtests.xml
