@@ -39,18 +39,13 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.1)
 
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-framework/build_support/BuildConfigs.cmake)
 
-SET (serviceName FileAccess)
-
-PROJECT(${serviceName}Service)
-
-SET (outputDir "${CMAKE_CURRENT_BINARY_DIR}/${serviceName}")
-
-SET(ServiceTools ${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools)
+SET(SERVICE_NAME FileAccess)
+PROJECT(${SERVICE_NAME}Service)
 
 INCLUDE_DIRECTORIES(
   "${CMAKE_CURRENT_SOURCE_DIR}/../external/dist/include"
-  "${ServiceTools}/CppTools/external/bpsdk/include"
-  "${ServiceTools}/CppTools/src"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/CppTools/external/bpsdk/include"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/CppTools/src"
 )
 
 LINK_DIRECTORIES(
@@ -59,18 +54,14 @@ LINK_DIRECTORIES(
 )
 
 SET(EXT_SRCS
-  ${ServiceTools}/CppTools/src/bptypeutil.cpp
-  ${ServiceTools}/CppTools/src/bpurlutil.cpp
-  ${ServiceTools}/CppTools/src/bpservicedescription.cpp
-  ${ServiceTools}/CppTools/src/bpserviceversion.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/CppTools/src/bptypeutil.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/CppTools/src/bpurlutil.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/CppTools/src/bpservicedescription.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/CppTools/src/bpserviceversion.cpp
 )
 
-SET(SRCS service.cpp littleuuid.cpp FileServer.cpp util/fileutil.cpp)
-SET(HDRS service.h littleuuid.h ResourceLimit.h FileServer.h util/bpsync.hh util/fileutil.hh)
-
 # add required OS libs here
-SET(OSLIBS)
-
+SET(OS_LIBS)
 IF (WIN32)
    # Visual Studio does some autolink magic with boost, no need
    # to specify library
@@ -87,34 +78,9 @@ ELSE()
        SET(OS_LIBS ${CARBON_LIBRARY})
    ENDIF()
 ENDIF ()
+SET(SRCS service.cpp littleuuid.cpp FileServer.cpp util/fileutil.cpp ${EXT_SRCS} ${OS_SRCS})
+SET(HDRS service.h littleuuid.h ResourceLimit.h FileServer.h util/bpsync.hh util/fileutil.hh)
+SET(LIBS mongoose_s bpfile_s ${BOOST_LIBS} ${OS_LIBS})
 
-ADD_LIBRARY(${serviceName} MODULE ${EXT_SRCS} ${SRCS} ${OS_SRCS} ${HDRS})
+BPAddCppService()
 
-
-TARGET_LINK_LIBRARIES(${serviceName} mongoose_s bpfile_s ${BOOST_LIBS} ${OS_LIBS})
-
-# create service directory
-FILE(MAKE_DIRECTORY ${outputDir})
-
-# copy in manifest
-GET_TARGET_PROPERTY(loc ${serviceName} LOCATION)
-GET_FILENAME_COMPONENT(ServiceLibrary "${loc}" NAME)
-CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/manifest.json"
-               "${outputDir}/manifest.json")  
-ADD_CUSTOM_COMMAND(TARGET ${serviceName} POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                           \"${loc}\" \"${outputDir}\")
-
-IF (APPLE)
-  ADD_CUSTOM_COMMAND(TARGET ${serviceName} POST_BUILD
-                     COMMAND strip -x \"${outputDir}/${ServiceLibrary}\")
-ENDIF (APPLE)
-
-# Pre-build step, build our externals
-#
-ADD_CUSTOM_TARGET(
-    ${serviceName}Externals ALL
-    COMMAND ruby build.rb
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../external"
-    COMMENT Building externals...)
-ADD_DEPENDENCIES( ${serviceName} ${serviceName}Externals )
