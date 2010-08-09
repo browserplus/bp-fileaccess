@@ -1,6 +1,6 @@
 #####
 # A CMake build file for the FileAccess service, a service that can
-# serve user selected files over localhost HTTP to a Browser environment
+# serve user selected files over localhost HTTP to a Browser environment.
 # 
 # Copyright 2010, Yahoo!
 # 
@@ -31,9 +31,11 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
+# 
+# Original Author: Gordon Durand
 #####
 
-cmake_minimum_required(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.1)
 IF (APPLE) 
   SET (CMAKE_OSX_DEPLOYMENT_TARGET "10.4"
        CACHE STRING "Compile for tiger deployment" FORCE)
