@@ -1,6 +1,6 @@
 #####
-# A CMake build file for the ImageAlter service, a service that can
-# manipulate images.
+# A CMake build file for the FileAccess service, a service that can
+# serve user selected files over localhost HTTP to a Browser environment
 # 
 # Copyright 2010, Yahoo!
 # 
