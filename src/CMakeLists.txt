@@ -36,12 +36,8 @@
 #####
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.1)
-IF (APPLE) 
-  SET (CMAKE_OSX_DEPLOYMENT_TARGET "10.4"
-       CACHE STRING "Compile for tiger deployment" FORCE)
-ENDIF (APPLE)
 
-INCLUDE(BuildConfigs.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-framework/build_support/BuildConfigs.cmake)
 
 SET (serviceName FileAccess)
 
