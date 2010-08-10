@@ -1,10 +1,14 @@
-XXX: this service needs some updated documentation.  
-XXX: Here's roughly how to get it building today
-
-1. git clone git://github.com/browserplus/bp-fileaccess
-2. cd bp-fileaccess
-3. git submodule init && git submodule update
-4. mkdir build
-5. cd build
-6. cmake ../src  (cmake -G "Visual Studio 9 2008" .. on Windows)
-7. make  (devenv FileAccessService.sln on Windows)
+how to build:
+ 
+ git submodule init
+ git submodule update
+ cd externals && ruby build.rb && cd ..
+ rm -rf build && mkdir build && cd build
+ cmake ../src (cmake -G "Visual Studio 9 2008" .. on Windows)
+ make (devenv FileAccessService.sln on Windows)
+ cd test && ruby ./runtests.rb && cd ..
+ 
+A directory FileAccess should be generated which is your service ready to 
+be installed using the BrowserPlus SDK:
+ 
+http://browserplus.yahoo.com/developer/service/sdk/
