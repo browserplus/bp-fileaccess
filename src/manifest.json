@@ -1,207 +1,207 @@
 {
-    "CoreletLibrary":"@SERVICE_LIBRARY@",
-    "ServiceLibrary":"@SERVICE_LIBRARY@",
-    "type":"standalone",
-    "strings":{
-        "it":{
-            "title":"Accesso ai file",
-            "summary":"Permette alle pagine web di visualizzare i contenuti dei file selezionati."
-        },
-        "es-US":{
-            "title":"Acceso de archivo",
-            "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
-        },
-        "zh-Hant-HK":{
-            "title":"檔案存取",
-            "summary":"允許網頁顯示你選的檔案內容。"
-        },
-        "zh-Hant-TW":{
-            "title":"檔案存取",
-            "summary":"允許網頁顯示您選的檔案內容。"
-        },
-        "de":{
-            "title":"Dateizugriff",
-            "summary":"Ermöglicht Webseiten die Anzeige der ausgewählten Dateiinhalte."
-        },
-        "fr":{
-            "title":"Accès aux fichiers",
-            "summary":"Pour permettre aux pages Web d'afficher le contenu des fichiers que vous sélectionnez."
-        },
-        "hi":{
-            "title":"File Access",
-            "summary":"Allows webpages to display the contents of files that you select."
-        },
-        "da-DK":{
-            "title":"Filadgang",
-            "summary":"Giver websider mulighed for at vise filindhold, som du vælger."
-        },
-        "es-CL":{
-            "title":"Acceso de archivo",
-            "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
-        },
-        "it-IT":{
-            "title":"Accesso ai file",
-            "summary":"Permette alle pagine web di visualizzare i contenuti dei file selezionati."
-        },
-        "es-PE":{
-            "title":"Acceso de archivo",
-            "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
-        },
-        "en-GB":{
-            "title":"File Access",
-            "summary":"Allows webpages to display the contents of files that you select."
-        },
-        "en-IN":{
-            "title":"File Access",
-            "summary":"Allows webpages to display the contents of files that you select."
-        },
-        "id-ID":{
-            "title":"File Access",
-            "summary":"Memungkinkan halaman web menampilkan konten file yang Anda pilih."
-        },
-        "fr-CA":{
-            "title":"Accès aux fichiers",
-            "summary":"Pour permettre aux pages Web d'afficher le contenu des fichiers que vous sélectionnez."
-        },
-        "es":{
-            "title":"Acceso de archivo",
-            "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
-        },
-        "sv":{
-            "title":"Filåtkomst",
-            "summary":"Tillåter att webbsidor visar innehållet i de filer du väljer."
-        },
-        "zh":{
-            "title":"文件存取",
-            "summary":"允许网页显示您选的文件内容。"
-        },
-        "es-MX":{
-            "title":"Acceso de archivo",
-            "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
-        },
-        "ko":{
-            "title":"파일 액세스",
-            "summary":"웹페이지가 사용자가 선택하는 파일의 컨텐츠를 표시할 수 있게 합니다."
-        },
-        "pt":{
-            "title":"Acesso aos arquivos",
-            "summary":"Permite que as páginas da web exibam os conteúdos de arquivos selecionados."
-        },
-        "es-CO":{
-            "title":"Acceso de archivo",
-            "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
-        },
-        "nb-NO":{
-            "title":"Filtilgang",
-            "summary":"Gjør det mulig for nettsteder å vise filinnholdet på filer du selv velger."
-        },
-        "id":{
-            "title":"File Access",
-            "summary":"Memungkinkan halaman web menampilkan konten file yang Anda pilih."
-        },
-        "en-AU":{
-            "title":"File Access",
-            "summary":"Allows web pages to display the contents of files that you select."
-        },
-        "th-TH":{
-            "title":"การเข้าถึงไฟล์",
-            "summary":"เว็บเพจสามารถแสดงเนื้อหาของไฟล์ที่คุณเลือก"
-        },
-        "en-US":{
-            "title":"File Access",
-            "summary":"Allows webpages to display the contents of files that you select."
-        },
-        "sv-SE":{
-            "title":"Filåtkomst",
-            "summary":"Tillåter att webbsidor visar innehållet i de filer du väljer."
-        },
-        "de-DE":{
-            "title":"Dateizugriff",
-            "summary":"Ermöglicht Webseiten die Anzeige der ausgewählten Dateiinhalte."
-        },
-        "en-SG":{
-            "title":"File Access",
-            "summary":"Allows webpages to display the contents of files that you select."
-        },
-        "es-ES":{
-            "title":"Acceso de archivo",
-            "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
-        },
-        "fr-FR":{
-            "title":"Accès aux fichiers",
-            "summary":"Pour permettre aux pages Web d'afficher le contenu des fichiers que vous sélectionnez."
-        },
-        "en-CA":{
-            "title":"File Access",
-            "summary":"Allows webpages to display the contents of files that you select."
-        },
-        "da":{
-            "title":"Filadgang",
-            "summary":"Giver websider mulighed for at vise filindhold, som du vælger."
-        },
-        "zh-Hans":{
-            "title":"文件存取",
-            "summary":"允许网页显示您选的文件内容。"
-        },
-        "pt-BR":{
-            "title":"Acesso aos arquivos",
-            "summary":"Permite que as páginas da web exibam os conteúdos de arquivos selecionados."
-        },
-        "vi-VN":{
-            "title":"File Access",
-            "summary":"Cho phép các trang web hiển thị nội dung của các tập tin mà bạn chọn."
-        },
-        "es-VE":{
-            "title":"Acceso de archivo",
-            "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
-        },
-        "vi":{
-            "title":"File Access",
-            "summary":"Cho phép các trang web hiển thị nội dung của các tập tin mà bạn chọn."
-        },
-        "zh-Hant":{
-            "title":"檔案存取",
-            "summary":"允許網頁顯示您選的檔案內容。"
-        },
-        "en":{
-            "title":"File Access",
-            "summary":"Allows webpages to display the contents of files that you select."
-        },
-        "nb":{
-            "title":"Filtilgang",
-            "summary":"Gjør det mulig for nettsteder å vise filinnholdet på filer du selv velger."
-        },
-        "th":{
-            "title":"การเข้าถึงไฟล์",
-            "summary":"เว็บเพจสามารถแสดงเนื้อหาของไฟล์ที่คุณเลือก"
-        },
-        "en-NZ":{
-            "title":"File Access",
-            "summary":"Allows webpages to display the contents of files that you select."
-        },
-        "ko-KR":{
-            "title":"파일 액세스",
-            "summary":"웹페이지가 사용자가 선택하는 파일의 컨텐츠를 표시할 수 있게 합니다."
-        },
-        "zh-Hans-CN":{
-            "title":"文件存取",
-            "summary":"允许网页显示您选的文件内容。"
-        },
-        "es-AR":{
-            "title":"Acceso de archivo",
-            "summary":"Permite que las páginas web muestren el contenido de los archivos que selecciones."
-        },
-        "en-MY":{
-            "title":"File Access",
-            "summary":"Allows webpages to display the contents of files that you select."
-        },
-        "hi-IN":{
-            "title":"File Access",
-            "summary":"Allows webpages to display the contents of files that you select."
-        },
-        "en-PH":{
-            "title":"File Access",
-            "summary":"Allows webpages to display the contents of files that you select."
-        }
+  "type":"standalone",
+  "CoreletLibrary":"@SERVICE_LIBRARY@",
+  "ServiceLibrary":"@SERVICE_LIBRARY@",
+  "strings":{
+    "it":{
+      "title":"Accesso ai file",
+      "summary":"Permette alle pagine web di visualizzare i contenuti dei file selezionati."
+    },
+    "es-US":{
+      "title":"Acceso de archivo",
+      "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
+    },
+    "zh-Hant-HK":{
+      "title":"檔案存取",
+      "summary":"允許網頁顯示你選的檔案內容。"
+    },
+    "zh-Hant-TW":{
+      "title":"檔案存取",
+      "summary":"允許網頁顯示您選的檔案內容。"
+    },
+    "de":{
+      "title":"Dateizugriff",
+      "summary":"Ermöglicht Webseiten die Anzeige der ausgewählten Dateiinhalte."
+    },
+    "fr":{
+      "title":"Accès aux fichiers",
+      "summary":"Pour permettre aux pages Web d'afficher le contenu des fichiers que vous sélectionnez."
+    },
+    "hi":{
+      "title":"File Access",
+      "summary":"Allows webpages to display the contents of files that you select."
+    },
+    "da-DK":{
+      "title":"Filadgang",
+      "summary":"Giver websider mulighed for at vise filindhold, som du vælger."
+    },
+    "es-CL":{
+      "title":"Acceso de archivo",
+      "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
+    },
+    "it-IT":{
+      "title":"Accesso ai file",
+      "summary":"Permette alle pagine web di visualizzare i contenuti dei file selezionati."
+    },
+    "es-PE":{
+      "title":"Acceso de archivo",
+      "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
+    },
+    "en-GB":{
+      "title":"File Access",
+      "summary":"Allows webpages to display the contents of files that you select."
+    },
+    "en-IN":{
+      "title":"File Access",
+      "summary":"Allows webpages to display the contents of files that you select."
+    },
+    "id-ID":{
+      "title":"File Access",
+      "summary":"Memungkinkan halaman web menampilkan konten file yang Anda pilih."
+    },
+    "fr-CA":{
+      "title":"Accès aux fichiers",
+      "summary":"Pour permettre aux pages Web d'afficher le contenu des fichiers que vous sélectionnez."
+    },
+    "es":{
+      "title":"Acceso de archivo",
+      "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
+    },
+    "sv":{
+      "title":"Filåtkomst",
+      "summary":"Tillåter att webbsidor visar innehållet i de filer du väljer."
+    },
+    "zh":{
+      "title":"文件存取",
+      "summary":"允许网页显示您选的文件内容。"
+    },
+    "es-MX":{
+      "title":"Acceso de archivo",
+      "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
+    },
+    "ko":{
+      "title":"파일 액세스",
+      "summary":"웹페이지가 사용자가 선택하는 파일의 컨텐츠를 표시할 수 있게 합니다."
+    },
+    "pt":{
+      "title":"Acesso aos arquivos",
+      "summary":"Permite que as páginas da web exibam os conteúdos de arquivos selecionados."
+    },
+    "es-CO":{
+      "title":"Acceso de archivo",
+      "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
+    },
+    "nb-NO":{
+      "title":"Filtilgang",
+      "summary":"Gjør det mulig for nettsteder å vise filinnholdet på filer du selv velger."
+    },
+    "id":{
+      "title":"File Access",
+      "summary":"Memungkinkan halaman web menampilkan konten file yang Anda pilih."
+    },
+    "en-AU":{
+      "title":"File Access",
+      "summary":"Allows web pages to display the contents of files that you select."
+    },
+    "th-TH":{
+      "title":"การเข้าถึงไฟล์",
+      "summary":"เว็บเพจสามารถแสดงเนื้อหาของไฟล์ที่คุณเลือก"
+    },
+    "en-US":{
+      "title":"File Access",
+      "summary":"Allows webpages to display the contents of files that you select."
+    },
+    "sv-SE":{
+      "title":"Filåtkomst",
+      "summary":"Tillåter att webbsidor visar innehållet i de filer du väljer."
+    },
+    "de-DE":{
+      "title":"Dateizugriff",
+      "summary":"Ermöglicht Webseiten die Anzeige der ausgewählten Dateiinhalte."
+    },
+    "en-SG":{
+      "title":"File Access",
+      "summary":"Allows webpages to display the contents of files that you select."
+    },
+    "es-ES":{
+      "title":"Acceso de archivo",
+      "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
+    },
+    "fr-FR":{
+      "title":"Accès aux fichiers",
+      "summary":"Pour permettre aux pages Web d'afficher le contenu des fichiers que vous sélectionnez."
+    },
+    "en-CA":{
+      "title":"File Access",
+      "summary":"Allows webpages to display the contents of files that you select."
+    },
+    "da":{
+      "title":"Filadgang",
+      "summary":"Giver websider mulighed for at vise filindhold, som du vælger."
+    },
+    "zh-Hans":{
+      "title":"文件存取",
+      "summary":"允许网页显示您选的文件内容。"
+    },
+    "pt-BR":{
+      "title":"Acesso aos arquivos",
+      "summary":"Permite que as páginas da web exibam os conteúdos de arquivos selecionados."
+    },
+    "vi-VN":{
+      "title":"File Access",
+      "summary":"Cho phép các trang web hiển thị nội dung của các tập tin mà bạn chọn."
+    },
+    "es-VE":{
+      "title":"Acceso de archivo",
+      "summary":"Permite que las páginas web muestren el contenido de los archivos que seleccionas."
+    },
+    "vi":{
+      "title":"File Access",
+      "summary":"Cho phép các trang web hiển thị nội dung của các tập tin mà bạn chọn."
+    },
+    "zh-Hant":{
+      "title":"檔案存取",
+      "summary":"允許網頁顯示您選的檔案內容。"
+    },
+    "en":{
+      "title":"File Access",
+      "summary":"Allows webpages to display the contents of files that you select."
+    },
+    "nb":{
+      "title":"Filtilgang",
+      "summary":"Gjør det mulig for nettsteder å vise filinnholdet på filer du selv velger."
+    },
+    "th":{
+      "title":"การเข้าถึงไฟล์",
+      "summary":"เว็บเพจสามารถแสดงเนื้อหาของไฟล์ที่คุณเลือก"
+    },
+    "en-NZ":{
+      "title":"File Access",
+      "summary":"Allows webpages to display the contents of files that you select."
+    },
+    "ko-KR":{
+      "title":"파일 액세스",
+      "summary":"웹페이지가 사용자가 선택하는 파일의 컨텐츠를 표시할 수 있게 합니다."
+    },
+    "zh-Hans-CN":{
+      "title":"文件存取",
+      "summary":"允许网页显示您选的文件内容。"
+    },
+    "es-AR":{
+      "title":"Acceso de archivo",
+      "summary":"Permite que las páginas web muestren el contenido de los archivos que selecciones."
+    },
+    "en-MY":{
+      "title":"File Access",
+      "summary":"Allows webpages to display the contents of files that you select."
+    },
+    "hi-IN":{
+      "title":"File Access",
+      "summary":"Allows webpages to display the contents of files that you select."
+    },
+    "en-PH":{
+      "title":"File Access",
+      "summary":"Allows webpages to display the contents of files that you select."
     }
+  }
 }
