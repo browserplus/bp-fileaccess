@@ -1,6 +1,6 @@
 {
-    "CoreletLibrary":"@ServiceLibrary@",
-    "ServiceLibrary":"@ServiceLibrary@",
+    "CoreletLibrary":"@SERVICE_LIBRARY@",
+    "ServiceLibrary":"@SERVICE_LIBRARY@",
     "type":"standalone",
     "strings":{
         "it":{
