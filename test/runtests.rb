@@ -28,6 +28,11 @@ class TestFileAccess < Test::Unit::TestCase
   def teardown
   end
 
+  def test_load_service
+    BrowserPlus.run(@service) { |s|
+    }
+  end
+
   def test_geturl
     BrowserPlus.run(@service) { |s|
       want = File.open(@textfile_path, "rb") { |f| f.read }
