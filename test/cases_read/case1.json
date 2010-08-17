@@ -1,0 +1,7 @@
+{
+  "file":    "services.txt",
+  "size":  25,
+  "offset": 5,
+  "binaryFile": "service.bin",
+  "negoffset": -15
+}
