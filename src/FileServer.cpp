@@ -107,7 +107,7 @@ FileServer::getFileChunks(const bp::file::Path& path,
     fstream.seekg(0, std::ios::beg);
     BPCLOG_DEBUG_STRM("file size = " << size);
 
-    if (size <= 0) throw("chunk size is invalid");
+    if (size <= 0) throw std::string("chunk size is invalid");
 
     // check resource usage
     if (m_limit.wouldExceed(size / chunkSize, size)) {
@@ -213,7 +213,7 @@ FileServer::getSlice(const bp::file::Path& path,
     }
 
     // now check arguments
-    if (offset > actual) throw("offset is beyond end of file");
+    if (offset > actual) throw std::string("offset is beyond end of file");
     if (size == (size_t) -1) size = actual - offset;
     if (size > (actual - offset)) size = actual - offset;
 
