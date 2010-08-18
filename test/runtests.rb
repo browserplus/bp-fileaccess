@@ -39,7 +39,7 @@ class TestFileAccess < Test::Unit::TestCase
 #        allchunks = s.chunk({ 'file' => file_uri, 'chunkSize' => chunksize })
 #        iter = (File.size(file_path) / chunksize)
 #        for i in 0..iter
-#          got = open(allchunks[i]) { |f| f.read() }
+#          got = open(allchunks[i], "rb") { |f| f.read() }
 #          want = File.open(file_path, "rb") { |f| f.read() }[i * chunksize, chunksize]
 #          assert_equal(want, got)
 #        end
@@ -61,12 +61,12 @@ class TestFileAccess < Test::Unit::TestCase
 #        want = File.open(file_path, "rb") { |f| f.read() }[0, File.size(file_path) + 1]
 #        chunksize = json["chunkSize"]
 #        allchunks = s.chunk({ 'file' => file_uri, 'chunkSize' => File.size(file_path) + 1} )
-#        got = open(allchunks[0]) { |f| f.read() }
+#        got = open(allchunks[0], "rb") { |f| f.read() }
 #        assert_equal(want, got)
 #
 #        # Negative chunksize returns whole file. <------------------------ BUG 211
 #        #allchunks = s.chunk({ 'file' => file_uri, 'chunkSize' => -5000} )
-#        #got = open(allchunks[0]) { |f| f.read() }
+#        #got = open(allchunks[0], "rb") { |f| f.read() }
 #        #want = File.open(file_path, "rb") { |f| f.read() }[0, 5000]
 #        #assert_equal(want, got)
 #      end
@@ -85,7 +85,7 @@ class TestFileAccess < Test::Unit::TestCase
         # Use geturl to read entire file.
         want = File.open(file_path, "rb") { |f| f.read }
         url = s.getURL({ 'file' => file_uri })
-        got = open(url) { |f| f.read }
+        got = open(url, "rb") { |f| f.read }
         assert_equal(want.gsub("\r\n","\n"), got.gsub("\r\n","\n"))
       end
     }
@@ -252,7 +252,7 @@ class TestFileAccess < Test::Unit::TestCase
 #        # Read entire file, no offset or size.
 #        want = File.open(file_path, "rb") { |f| f.read }
 #        got = s.slice({ 'file' => file_uri})
-#        got = open(got) { |f| f.read }
+#        got = open(got, "rb") { |f| f.read }
 #        assert_equal(want, got)
 #      end
 #    }
@@ -274,7 +274,7 @@ class TestFileAccess < Test::Unit::TestCase
 #        # Slice with offset and size.
 #        want = File.open(file_path, "rb") { |f| f.read() }[offset, size]
 #        got = s.slice({ 'file' => file_uri, 'offset' => offset, 'size' => size})
-#        got = open(got) { |f| f.read() }
+#        got = open(got, "rb") { |f| f.read() }
 #        assert_equal(want, got)
 #      end
 #    }
@@ -297,7 +297,7 @@ class TestFileAccess < Test::Unit::TestCase
 #        #assert_raise(RuntimeError) { s.slice({ 'file' => file_uri, 'offset' => size, 'size' => offset }) }
 #        want = File.open(file_path, "rb") { |f| f.read() }[offset, size]
 #        got = s.slice({ 'file' => file_uri, 'offset' => offset, 'size' => size})
-#        got = open(got) { |f| f.read() }
+#        got = open(got, "rb") { |f| f.read() }
 #        assert_equal(want, got)
 #      end
 #    }
@@ -320,7 +320,7 @@ class TestFileAccess < Test::Unit::TestCase
 #        #assert_raise(RuntimeError) { s.slice({ 'file' => file_uri, 'offset' => offset }) }
 #        want = File.open(file_path, "rb") { |f| f.read() }[offset, size]
 #        got = s.slice({ 'file' => file_uri, 'offset' => offset, 'size' => size})
-#        got = open(got) { |f| f.read() }
+#        got = open(got, "rb") { |f| f.read() }
 #        assert_equal(want, got)
 #      end
 #    }
@@ -342,7 +342,7 @@ class TestFileAccess < Test::Unit::TestCase
 #        # Offset set at last byte, should return nothing ("").
 #        want = ""
 #        got = s.slice({ 'file' => file_uri, 'offset' => File.size(file_path) })
-#        got = open(got) { |f| f.read() }
+#        got = open(got, "rb") { |f| f.read() }
 #        assert_equal(want, got)
 #      end
 #    }
