@@ -231,10 +231,9 @@ class TestFileAccess < Test::Unit::TestCase
         size = json["size"]
         offset = json["offset"]
 
-        ##### Read with size 0 <---------------------------------- BUG 208
-        #want = ""
-        #got = s.read({ 'file' => textfile_uri, 'size' => 0, 'offset' => 0 })
-        #assert_equal(want, got)
+        want = ""
+        got = s.read({ 'file' => textfile_uri, 'size' => 0, 'offset' => 0 })
+        assert_equal(want, got)
       end
     }
   end

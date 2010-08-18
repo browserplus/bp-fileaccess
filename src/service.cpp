@@ -73,7 +73,7 @@ readFileContents(const bp::file::Path & path,
     }
 
     // set to 2mb if 
-    if (size <= 0) size = FA_MAX_READ;
+    if (size < 0) size = FA_MAX_READ;
 
     // verify file exists and open
     if (!bp::file::openReadableStream(
