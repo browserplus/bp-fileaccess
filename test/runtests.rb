@@ -5,6 +5,8 @@ require File.join(File.dirname(File.dirname(File.expand_path(__FILE__))),
 require 'uri'
 require 'test/unit'
 require 'open-uri'
+require 'rbconfig'
+include Config
 
 class TestFileAccess < Test::Unit::TestCase
   def setup
@@ -27,51 +29,52 @@ class TestFileAccess < Test::Unit::TestCase
   # BrowserPlus.FileAccess.chunk({params}, function{}())
   # Get a vector of objects that result from chunking a file.
   # The return value will be an ordered list of file handles with each successive file representing a different chunk
-# NEEDSWORK!!!  Chunking is broken on Windows.
-#  def test_chunk
-#    BrowserPlus.run(@service) { |s|
-#      Dir.glob(File.join(File.dirname(__FILE__), "cases_chunk", "*.json")).each do |f|
-#        json = JSON.parse(File.read(f))
-#        file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"])
-#        file_uri = "path:" + file_path
-#
-#        chunksize = json["chunkSize"]
-#        allchunks = s.chunk({ 'file' => file_uri, 'chunkSize' => chunksize })
-#        iter = (File.size(file_path) / chunksize)
-#        for i in 0..iter
-#          got = open(allchunks[i], "rb") { |f| f.read() }
-#          want = File.open(file_path, "rb") { |f| f.read() }[i * chunksize, chunksize]
-#          assert_equal(want, got)
-#        end
-#      end
-#    }
-#  end
+  def test_chunk
+    BrowserPlus.run(@service) { |s|
+      Dir.glob(File.join(File.dirname(__FILE__), "cases_chunk", "*.json")).each do |f|
+        json = JSON.parse(File.read(f))
+        file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"])
+        file_uri = "path:" + file_path
+
+        chunksize = json["chunkSize"]
+        allchunks = s.chunk({ 'file' => file_uri, 'chunkSize' => chunksize })
+        iter = (File.size(file_path) / chunksize)
+        for i in 0..iter
+          allchunks[i].slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
+          got = open(allchunks[i], "rb") { |f| f.read() }
+          want = File.open(file_path, "rb") { |f| f.read() }[i * chunksize, chunksize]
+          assert_equal(want, got)
+        end
+      end
+    }
+  end
 
   # BrowserPlus.FileAccess.chunk({params}, function{}())
   # Get a vector of objects that result from chunking a file.
   # The return value will be an ordered list of file handles with each successive file representing a different chunk
-# NEEDSWORK!!!  Chunking is broken on Windows.
-#  def test_chunk_bigger_than_filesize
-#    BrowserPlus.run(@service) { |s|
-#      Dir.glob(File.join(File.dirname(__FILE__), "cases_chunk", "*.json")).each do |f|
-#        json = JSON.parse(File.read(f))
-#        file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
-#        file_uri = "path:" + file_path
-#
-#        want = File.open(file_path, "rb") { |f| f.read() }[0, File.size(file_path) + 1]
-#        chunksize = json["chunkSize"]
-#        allchunks = s.chunk({ 'file' => file_uri, 'chunkSize' => File.size(file_path) + 1} )
-#        got = open(allchunks[0], "rb") { |f| f.read() }
-#        assert_equal(want, got)
-#
-#        # Negative chunksize returns whole file. <------------------------ BUG 211
-#        #allchunks = s.chunk({ 'file' => file_uri, 'chunkSize' => -5000} )
-#        #got = open(allchunks[0], "rb") { |f| f.read() }
-#        #want = File.open(file_path, "rb") { |f| f.read() }[0, 5000]
-#        #assert_equal(want, got)
-#      end
-#    }
-#  end
+  def test_chunk_bigger_than_filesize
+    BrowserPlus.run(@service) { |s|
+      Dir.glob(File.join(File.dirname(__FILE__), "cases_chunk", "*.json")).each do |f|
+        json = JSON.parse(File.read(f))
+        file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
+        file_uri = "path:" + file_path
+
+        want = File.open(file_path, "rb") { |f| f.read() }[0, File.size(file_path) + 1]
+        chunksize = json["chunkSize"]
+        allchunks = s.chunk({ 'file' => file_uri, 'chunkSize' => File.size(file_path) + 1} )
+        allchunks[0].slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
+        got = open(allchunks[0], "rb") { |f| f.read() }
+        assert_equal(want, got)
+
+        # Negative chunksize returns whole file. <------------------------ BUG 211
+        #allchunks = s.chunk({ 'file' => file_uri, 'chunkSize' => -5000} )
+        #allchunks[0].slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
+        #got = open(allchunks[0], "rb") { |f| f.read() }
+        #want = File.open(file_path, "rb") { |f| f.read() }[0, 5000]
+        #assert_equal(want, got)
+      end
+    }
+  end
 
   # BrowserPlus.FileAccess.getURL({params}, function{}())
   # Get a localhost url that can be used to attain the full contents of a file on disk.
@@ -238,113 +241,108 @@ class TestFileAccess < Test::Unit::TestCase
 
   # BrowserPlus.FileAccess.slice({params}, function{}())
   # Given a file and an optional offset and size, return a new file whose contents are a subset of the first.
-# NEEDSWORK!!!  Slicing is broken on Windows.
-#  def test_slice_text
-#    BrowserPlus.run(@service) { |s|
-#      Dir.glob(File.join(File.dirname(__FILE__), "cases_slice", "*.json")).each do |f|
-#        json = JSON.parse(File.read(f))
-#        file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
-#        file_uri = "path:" + file_path
-#
-#        size = json["size"]
-#        offset = json["offset"]
-#
-#        # Read entire file, no offset or size.
-#        want = File.open(file_path, "rb") { |f| f.read }
-#        got = s.slice({ 'file' => file_uri})
-#        got = open(got, "rb") { |f| f.read }
-#        assert_equal(want, got)
-#      end
-#    }
-#  end
+  def test_slice_text
+    BrowserPlus.run(@service) { |s|
+      Dir.glob(File.join(File.dirname(__FILE__), "cases_slice", "*.json")).each do |f|
+        json = JSON.parse(File.read(f))
+        file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
+        file_uri = "path:" + file_path
+
+        size = json["size"]
+        offset = json["offset"]
+
+        # Read entire file, no offset or size.
+        want = File.open(file_path, "rb") { |f| f.read }
+        got = s.slice({ 'file' => file_uri})
+        got.slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
+        got = open(got, "rb") { |f| f.read }
+        assert_equal(want, got)
+      end
+    }
+  end
 
   # BrowserPlus.FileAccess.slice({params}, function{}())
   # Given a file and an optional offset and size, return a new file whose contents are a subset of the first.
-# NEEDSWORK!!!  Chunking is broken on Windows.
-#  def test_slice_text_offset_and_size
-#    BrowserPlus.run(@service) { |s|
-#      Dir.glob(File.join(File.dirname(__FILE__), "cases_slice", "*.json")).each do |f|
-#        json = JSON.parse(File.read(f))
-#        file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
-#        file_uri = "path:" + file_path
-#
-#        size = json["size"]
-#        offset = json["offset"]
-#
-#        # Slice with offset and size.
-#        want = File.open(file_path, "rb") { |f| f.read() }[offset, size]
-#        got = s.slice({ 'file' => file_uri, 'offset' => offset, 'size' => size})
-#        got = open(got, "rb") { |f| f.read() }
-#        assert_equal(want, got)
-#      end
-#    }
-#  end
+  def test_slice_text_offset_and_size
+    BrowserPlus.run(@service) { |s|
+      Dir.glob(File.join(File.dirname(__FILE__), "cases_slice", "*.json")).each do |f|
+        json = JSON.parse(File.read(f))
+        file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
+        file_uri = "path:" + file_path
+
+        size = json["size"]
+        offset = json["offset"]
+
+        # Slice with offset and size.
+        want = File.open(file_path, "rb") { |f| f.read() }[offset, size]
+        got = s.slice({ 'file' => file_uri, 'offset' => offset, 'size' => size})
+        got.slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
+        got = open(got, "rb") { |f| f.read() }
+        assert_equal(want, got)
+      end
+    }
+  end
 
   # BrowserPlus.FileAccess.slice({params}, function{}())
   # Given a file and an optional offset and size, return a new file whose contents are a subset of the first.
-# NEEDSWORK!!!  Slicing is broken on Windows.
-#  def test_slice_binary
-#    BrowserPlus.run(@service) { |s|
-#      Dir.glob(File.join(File.dirname(__FILE__), "cases_slice", "*.json")).each do |f|
-#        json = JSON.parse(File.read(f))
-#        file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
-#        file_uri = "path:" + file_path
-#
-#        size = 5
-#        offset = 20
-#
-#        # Slice a binary file --- should raise Runtime error? <------------------- BUG 213
-#        #assert_raise(RuntimeError) { s.slice({ 'file' => file_uri, 'offset' => size, 'size' => offset }) }
-#        want = File.open(file_path, "rb") { |f| f.read() }[offset, size]
-#        got = s.slice({ 'file' => file_uri, 'offset' => offset, 'size' => size})
-#        got = open(got, "rb") { |f| f.read() }
-#        assert_equal(want, got)
-#      end
-#    }
-#  end
+  def test_slice_binary
+    BrowserPlus.run(@service) { |s|
+      Dir.glob(File.join(File.dirname(__FILE__), "cases_slice", "*.json")).each do |f|
+        json = JSON.parse(File.read(f))
+        file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
+        file_uri = "path:" + file_path
+
+        size = 5
+        offset = 20
+
+        # Slice a binary file --- should raise Runtime error? <------------------- BUG 213
+        #assert_raise(RuntimeError) { s.slice({ 'file' => file_uri, 'offset' => size, 'size' => offset }) }
+        want = File.open(file_path, "rb") { |f| f.read() }[offset, size]
+        got = s.slice({ 'file' => file_uri, 'offset' => offset, 'size' => size})
+        got.slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
+        got = open(got, "rb") { |f| f.read() }
+        assert_equal(want, got)
+      end
+    }
+  end
 
   # BrowserPlus.FileAccess.slice({params}, function{}())
   # Given a file and an optional offset and size, return a new file whose contents are a subset of the first.
-# NEEDSWORK!!!  Slicing is broken on Windows.
-#  def test_slice_1
-#    BrowserPlus.run(@service) { |s|
-#      Dir.glob(File.join(File.dirname(__FILE__), "cases_slice", "*.json")).each do |f|
-#        json = JSON.parse(File.read(f))
-#        file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
-#        file_uri = "path:" + file_path
-#
-#        size = json["size"]
-#        offset = 1024000
-#
-#        # Why is out-of-range runtime error not occurring in s.slice as does in s.read <------------------- BUG 209
-#        #assert_raise(RuntimeError) { s.slice({ 'file' => file_uri, 'offset' => offset }) }
-#        want = File.open(file_path, "rb") { |f| f.read() }[offset, size]
-#        got = s.slice({ 'file' => file_uri, 'offset' => offset, 'size' => size})
-#        got = open(got, "rb") { |f| f.read() }
-#        assert_equal(want, got)
-#      end
-#    }
-#  end
+  def test_slice_1
+    BrowserPlus.run(@service) { |s|
+      Dir.glob(File.join(File.dirname(__FILE__), "cases_slice", "*.json")).each do |f|
+        json = JSON.parse(File.read(f))
+        file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
+        file_uri = "path:" + file_path
+
+        size = json["size"]
+        offset = 1024000
+
+        # Why is out-of-range runtime error not occurring in s.slice as does in s.read <------------------- BUG 209
+        assert_raise(RuntimeError) { s.slice({ 'file' => file_uri, 'offset' => offset }) }
+      end
+    }
+  end
 
   # BrowserPlus.FileAccess.slice({params}, function{}())
   # Given a file and an optional offset and size, return a new file whose contents are a subset of the first.
-# NEEDSWORK!!!  Slicing is broken on Windows.
-#  def test_slice_2
-#    BrowserPlus.run(@service) { |s|
-#      Dir.glob(File.join(File.dirname(__FILE__), "cases_slice", "*.json")).each do |f|
-#        json = JSON.parse(File.read(f))
-#        file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
-#        file_uri = "path:" + file_path
-#
-#        size = json["size"]
-#        offset = json["offset"]
-#
-#        # Offset set at last byte, should return nothing ("").
-#        want = ""
-#        got = s.slice({ 'file' => file_uri, 'offset' => File.size(file_path) })
-#        got = open(got, "rb") { |f| f.read() }
-#        assert_equal(want, got)
-#      end
-#    }
-#  end
+  def test_slice_2
+    BrowserPlus.run(@service) { |s|
+      Dir.glob(File.join(File.dirname(__FILE__), "cases_slice", "*.json")).each do |f|
+        json = JSON.parse(File.read(f))
+        file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
+        file_uri = "path:" + file_path
+
+        size = json["size"]
+        offset = json["offset"]
+
+        # Offset set at last byte, should return nothing ("").
+        want = ""
+        got = s.slice({ 'file' => file_uri, 'offset' => File.size(file_path) })
+        got.slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
+        got = open(got, "rb") { |f| f.read() }
+        assert_equal(want, got)
+      end
+    }
+  end
 end
