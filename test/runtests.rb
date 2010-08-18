@@ -318,7 +318,6 @@ class TestFileAccess < Test::Unit::TestCase
         size = json["size"]
         offset = 1024000
 
-        # Why is out-of-range runtime error not occurring in s.slice as does in s.read <------------------- BUG 209
         assert_raise(RuntimeError) { s.slice({ 'file' => file_uri, 'offset' => offset }) }
       end
     }
