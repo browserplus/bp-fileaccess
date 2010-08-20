@@ -294,8 +294,6 @@ class TestFileAccess < Test::Unit::TestCase
         size = 5
         offset = 20
 
-        # Slice a binary file --- should raise Runtime error? <------------------- BUG 213
-        #assert_raise(RuntimeError) { s.slice({ 'file' => file_uri, 'offset' => size, 'size' => offset }) }
         want = File.open(file_path, "rb") { |f| f.read() }[offset, size]
         got = s.slice({ 'file' => file_uri, 'offset' => offset, 'size' => size})
         got.slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
