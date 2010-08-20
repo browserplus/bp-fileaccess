@@ -66,12 +66,12 @@ class TestFileAccess < Test::Unit::TestCase
         got = open(allchunks[0], "rb") { |f| f.read() }
         assert_equal(want, got)
 
-        # Negative chunksize returns whole file. <------------------------ BUG 211
-        #allchunks = s.chunk({ 'file' => file_uri, 'chunkSize' => -5000} )
-        #allchunks[0].slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
-        #got = open(allchunks[0], "rb") { |f| f.read() }
-        #want = File.open(file_path, "rb") { |f| f.read() }[0, 5000]
-        #assert_equal(want, got)
+        # Negative chunksize returns whole file.
+        allchunks = s.chunk({ 'file' => file_uri, 'chunkSize' => -5000} )
+        allchunks[0].slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
+        got = open(allchunks[0], "rb") { |f| f.read() }
+        want = File.open(file_path, "rb") { |f| f.read() }
+        assert_equal(want, got)
       end
     }
   end
