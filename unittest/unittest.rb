@@ -313,7 +313,7 @@ class TestFileAccess < Test::Unit::TestCase
         file_uri = "path:" + file_path
 
         size = json["size"]
-        offset = 1024000
+        offset = File.size(file_path) + 5
 
         assert_raise(RuntimeError) { s.slice({ 'file' => file_uri, 'offset' => offset }) }
       end
