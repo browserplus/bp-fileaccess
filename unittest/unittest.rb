@@ -16,13 +16,14 @@ class TestFileAccess < Test::Unit::TestCase
     end
     @cwd = File.dirname(File.expand_path(__FILE__))
     @service = File.join(@cwd, "../#{subdir}")
+    @providerDir = File.expand_path(File.join(@cwd, "providerDir"))
   end
   
   def teardown
   end
 
   def test_load_service
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
     }
   end
 
@@ -30,7 +31,7 @@ class TestFileAccess < Test::Unit::TestCase
   # Get a vector of objects that result from chunking a file.
   # The return value will be an ordered list of file handles with each successive file representing a different chunk
   def test_chunk
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_chunk", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"])
@@ -53,7 +54,7 @@ class TestFileAccess < Test::Unit::TestCase
   # Get a vector of objects that result from chunking a file.
   # The return value will be an ordered list of file handles with each successive file representing a different chunk
   def test_chunk_bigger_than_filesize
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_chunk", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
@@ -79,7 +80,7 @@ class TestFileAccess < Test::Unit::TestCase
   # BrowserPlus.FileAccess.getURL({params}, function{}())
   # Get a localhost url that can be used to attain the full contents of a file on disk.
   def test_geturl
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_geturl", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
@@ -97,7 +98,7 @@ class TestFileAccess < Test::Unit::TestCase
   # BrowserPlus.FileAccess.read({params}, function{}())
   # Read the contents of a file on disk returning a string. If the file contains binary data an error will be returned
   def test_read_text
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_read", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         textfile_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
@@ -114,7 +115,7 @@ class TestFileAccess < Test::Unit::TestCase
   # BrowserPlus.FileAccess.read({params}, function{}())
   # Read the contents of a file on disk returning a string. If the file contains binary data an error will be returned
   def test_read_binary
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_read", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         binfile_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["binaryFile"] )
@@ -129,7 +130,7 @@ class TestFileAccess < Test::Unit::TestCase
   # BrowserPlus.FileAccess.read({params}, function{}())
   # Read the contents of a file on disk returning a string. If the file contains binary data an error will be returned
   def test_read_partial
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_read", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         textfile_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
@@ -148,7 +149,7 @@ class TestFileAccess < Test::Unit::TestCase
   # BrowserPlus.FileAccess.read({params}, function{}())
   # Read the contents of a file on disk returning a string. If the file contains binary data an error will be returned
   def test_read_partial_offset
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_read", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         textfile_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
@@ -168,7 +169,7 @@ class TestFileAccess < Test::Unit::TestCase
   # BrowserPlus.FileAccess.read({params}, function{}())
   # Read the contents of a file on disk returning a string. If the file contains binary data an error will be returned
   def test_read_outofrange
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_read", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         textfile_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
@@ -183,7 +184,7 @@ class TestFileAccess < Test::Unit::TestCase
   # BrowserPlus.FileAccess.read({params}, function{}())
   # Read the contents of a file on disk returning a string. If the file contains binary data an error will be returned
   def test_read_offset_lastbyte
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_read", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         textfile_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
@@ -200,7 +201,7 @@ class TestFileAccess < Test::Unit::TestCase
   # BrowserPlus.FileAccess.read({params}, function{}())
   # Read the contents of a file on disk returning a string. If the file contains binary data an error will be returned
   def test_read_negative_offset
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_read", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         textfile_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
@@ -222,7 +223,7 @@ class TestFileAccess < Test::Unit::TestCase
   # BrowserPlus.FileAccess.read({params}, function{}())
   # Read the contents of a file on disk returning a string. If the file contains binary data an error will be returned
   def test_read_sizezero
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_read", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         textfile_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
@@ -241,7 +242,7 @@ class TestFileAccess < Test::Unit::TestCase
   # BrowserPlus.FileAccess.slice({params}, function{}())
   # Given a file and an optional offset and size, return a new file whose contents are a subset of the first.
   def test_slice_text
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_slice", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
@@ -263,7 +264,7 @@ class TestFileAccess < Test::Unit::TestCase
   # BrowserPlus.FileAccess.slice({params}, function{}())
   # Given a file and an optional offset and size, return a new file whose contents are a subset of the first.
   def test_slice_text_offset_and_size
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_slice", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
@@ -285,7 +286,7 @@ class TestFileAccess < Test::Unit::TestCase
   # BrowserPlus.FileAccess.slice({params}, function{}())
   # Given a file and an optional offset and size, return a new file whose contents are a subset of the first.
   def test_slice_binary
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_slice", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
@@ -306,7 +307,7 @@ class TestFileAccess < Test::Unit::TestCase
   # BrowserPlus.FileAccess.slice({params}, function{}())
   # Given a file and an optional offset and size, return a new file whose contents are a subset of the first.
   def test_slice_1
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_slice", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
@@ -323,7 +324,7 @@ class TestFileAccess < Test::Unit::TestCase
   # BrowserPlus.FileAccess.slice({params}, function{}())
   # Given a file and an optional offset and size, return a new file whose contents are a subset of the first.
   def test_slice_2
-    BrowserPlus.run(@service) { |s|
+    BrowserPlus.run(@service, @providerDir) { |s|
       Dir.glob(File.join(File.dirname(__FILE__), "cases_slice", "*.json")).each do |f|
         json = JSON.parse(File.read(f))
         file_path = File.join(File.dirname(File.expand_path(__FILE__)), "test_files", json["file"] )
