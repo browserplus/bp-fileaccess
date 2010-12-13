@@ -25,7 +25,7 @@ const BPCFunctionTable * g_bpCoreFunctions = NULL;
 static int
 BPPAllocate(void ** instance, unsigned int, const BPElement * elem)
 {
-    bp::file::Path tempDir;
+    boost::filesystem::path tempDir;
     bp::Object * args = bp::Object::build(elem);
     if (args->has("temp_dir", BPTString)) {
         tempDir = (std::string)(*(args->get("temp_dir")));
@@ -61,7 +61,7 @@ hasEmbeddedNulls(unsigned char * bytes, unsigned int len)
 }
 
 static bp::String *
-readFileContents(const bp::file::Path & path,
+readFileContents(const boost::filesystem::path & path,
                  unsigned int offset, int size, std::string & err)
 {
     std::ifstream fstream;
@@ -148,7 +148,7 @@ BPPInvoke(void * instance, const char * funcName,
         return;
     }
 
-    bp::file::Path path(pathString);
+    boost::filesystem::path path(pathString);
     
     if (!strcmp(funcName, "read"))
     {
@@ -214,7 +214,7 @@ BPPInvoke(void * instance, const char * funcName,
         } else {
             bp::List* l = new bp::List;
             for (size_t i = 0; i < v.size(); i++) {
-                l->append(new bp::Path(v[i].m_path.utf8()));
+                l->append(new bp::Path(v[i].m_path.native()));
             }
             g_bpCoreFunctions->postResults(tid, l->elemPtr());
         }
@@ -235,9 +235,9 @@ BPPInvoke(void * instance, const char * funcName,
 
         std::string err;
         try {
-            bp::file::Path s;
+            boost::filesystem::path s;
             s = fs->getSlice(path, offset, size);
-            g_bpCoreFunctions->postResults(tid, bp::Path(s.utf8()).elemPtr());
+            g_bpCoreFunctions->postResults(tid, bp::Path(s.native()).elemPtr());
         } catch (const std::string& e) {
             g_bpCoreFunctions->postError(tid, "bp.fileAccessError", e.c_str());
         }
@@ -337,7 +337,7 @@ BPFunctionDefinition s_functions[] = {
 // a description of this corelet.
 BPCoreletDefinition s_coreletDef = {
     "FileAccess",
-    2, 0, 3,
+    2, 0, 4,
     "Access the contents of files that the user has selected.",
     sizeof(s_functions)/sizeof(s_functions[0]),
     s_functions

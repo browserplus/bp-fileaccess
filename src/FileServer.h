@@ -20,7 +20,7 @@
 class ChunkInfo
 {
  public:
-    bp::file::Path m_path;
+    boost::filesystem::path m_path;
     size_t m_chunkNumber;
     size_t m_numberOfChunks;
 };
@@ -28,7 +28,7 @@ class ChunkInfo
 class FileServer
 {
   public:
-    FileServer(const bp::file::Path& tempDir);
+    FileServer(const boost::filesystem::path& tempDir);
     ~FileServer();
 
     /* start the server, returns host/port when bound, otherwise returns
@@ -36,17 +36,17 @@ class FileServer
     std::string start();
 
     /* add a file to the server, returning a url, .empty() on error */ 
-    std::string addFile(const bp::file::Path& path);
+    std::string addFile(const boost::filesystem::path& path);
 
     /* add a chunked file to the server, returning a vector of 
      * ChunkInfo (empty on error)
      */
-    std::vector<ChunkInfo> getFileChunks(const bp::file::Path& path,
+    std::vector<ChunkInfo> getFileChunks(const boost::filesystem::path& path,
                                          size_t chunkSize);
 
     /* get a slice of a file */
-    bp::file::Path getSlice(const bp::file::Path& path,
-                            size_t offset, size_t size);
+    boost::filesystem::path getSlice(const boost::filesystem::path& path,
+                                     size_t offset, size_t size);
 
   private:
 
@@ -54,8 +54,8 @@ class FileServer
                                  void * user_data);
 
     unsigned short int m_port;
-    std::map<std::string, bp::file::Path> m_paths;
-    bp::file::Path m_tempDir;
+    std::map<std::string, boost::filesystem::path> m_paths;
+    boost::filesystem::path m_tempDir;
     ResourceLimit m_limit;
     void * m_ctx;
     bp::sync::Mutex m_lock;

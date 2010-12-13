@@ -19,7 +19,7 @@
 #define FS_MAX_TEMP_BYTES 1024 * 1024 * 512
 
 
-FileServer::FileServer(const bp::file::Path& tempDir) 
+FileServer::FileServer(const boost::filesystem::path& tempDir) 
     : m_tempDir(tempDir),
       m_limit(FS_MAX_TEMP_FILES, FS_MAX_TEMP_BYTES),
       m_ctx(NULL)
@@ -35,7 +35,7 @@ FileServer::~FileServer()
         m_ctx = NULL;
     }
     BPCLOG_INFO( "Stopping m_httpServer." );
-    bp::file::remove(m_tempDir);
+    bp::file::safeRemove(m_tempDir);
 }
 
 std::string
@@ -62,7 +62,7 @@ FileServer::start()
 
 
 std::string
-FileServer::addFile(const bp::file::Path& path)
+FileServer::addFile(const boost::filesystem::path& path)
 {
     // generate a nice random url path
     std::stringstream url;    
@@ -75,12 +75,12 @@ FileServer::addFile(const bp::file::Path& path)
         m_paths[uuid] = path;
     }
 
-    BPCLOG_DEBUG_STRM( "m_urls[" << uuid << "] = " << path.utf8() );
+    BPCLOG_DEBUG_STRM( "m_urls[" << uuid << "] = " << path.string() );
     return url.str();
 }
 
 std::vector<ChunkInfo>
-FileServer::getFileChunks(const bp::file::Path& path,
+FileServer::getFileChunks(const boost::filesystem::path& path,
                           size_t chunkSize)
 {
     if (m_tempDir.empty()) {
@@ -89,7 +89,7 @@ FileServer::getFileChunks(const bp::file::Path& path,
 
     try {
         boost::filesystem::create_directories(m_tempDir);
-    } catch (const bp::file::tFileSystemError&) {
+    } catch (const boost::filesystem::filesystem_error&) {
         throw std::string("unable to create temp dir");
     }
 
@@ -142,8 +142,8 @@ FileServer::getFileChunks(const bp::file::Path& path,
 
             // write chunk to a file
             std::stringstream ss;
-            ss << bp::file::utf8FromNative(path.filename()) << "_chunk-" << chunkNumber << "_";
-            bp::file::Path p = bp::file::getTempPath(m_tempDir, ss.str());
+            ss << path.filename().string() << "_chunk-" << chunkNumber << "_";
+            boost::filesystem::path p = bp::file::getTempPath(m_tempDir, ss.str());
             BPCLOG_DEBUG_STRM("chunk file: " << p);
             std::ofstream ofs;
             if (!bp::file::openWritableStream(ofs, p, std::ios_base::out
@@ -177,8 +177,8 @@ FileServer::getFileChunks(const bp::file::Path& path,
 }
 
 #define BUFSIZE (1024 * 8)
-bp::file::Path
-FileServer::getSlice(const bp::file::Path& path,
+boost::filesystem::path
+FileServer::getSlice(const boost::filesystem::path& path,
                      size_t offset, size_t size)
 {
     if (m_tempDir.empty()) {
@@ -189,11 +189,11 @@ FileServer::getSlice(const bp::file::Path& path,
 
     try {
         boost::filesystem::create_directories(m_tempDir);
-    } catch (const bp::file::tFileSystemError&) {
+    } catch (const boost::filesystem::filesystem_error&) {
         throw std::string("unable to create temp dir");
     }
 
-    bp::file::Path s;
+    boost::filesystem::path s;
 
     std::ifstream fstream;
     if (!bp::file::openReadableStream(fstream, path, 
@@ -224,8 +224,7 @@ FileServer::getSlice(const bp::file::Path& path,
 
     // create new output file
     std::ofstream ofs;
-    s = bp::file::getTempPath(m_tempDir, 
-		                      bp::file::utf8FromNative(path.filename()));
+    s = bp::file::getTempPath(m_tempDir, path.filename().string());
     if (!bp::file::openWritableStream(ofs, s, std::ios_base::out
                                       | std::ios_base::binary)) {
         throw std::string("unable to create new file");
@@ -277,10 +276,10 @@ FileServer::mongooseCallback(void * connPtr, void * requestPtr,
     BPCLOG_INFO_STRM( "token '" << id << "' extracted from request path: "
                       << request->uri );
 
-    bp::file::Path path;
+    boost::filesystem::path path;
     {
         bp::sync::Lock lck(self->m_lock);
-        std::map<std::string,bp::file::Path>::const_iterator it;
+        std::map<std::string,boost::filesystem::path>::const_iterator it;
         it = self->m_paths.find(id);
         if (it == self->m_paths.end()) {
             BPCLOG_WARN( "Requested id not found." );
@@ -292,7 +291,7 @@ FileServer::mongooseCallback(void * connPtr, void * requestPtr,
     
 
     // read file and output to connection
-    FILE * f = ft::fopen_binary_read(path.utf8());
+    FILE * f = ft::fopen_binary_read(path.string());
     if (f == NULL) {
         BPCLOG_WARN_STRM( "Couldn't open file for reading " << path );
         mg_printf(conn, "HTTP/1.0 500 Internal Error\r\n\r\n");
