@@ -214,7 +214,7 @@ BPPInvoke(void * instance, const char * funcName,
         } else {
             bp::List* l = new bp::List;
             for (size_t i = 0; i < v.size(); i++) {
-                l->append(new bp::Path(v[i].m_path.native()));
+                l->append(new bp::Path(bp::file::nativeUtf8String(v[i].m_path)));
             }
             g_bpCoreFunctions->postResults(tid, l->elemPtr());
         }
@@ -235,9 +235,8 @@ BPPInvoke(void * instance, const char * funcName,
 
         std::string err;
         try {
-            boost::filesystem::path s;
-            s = fs->getSlice(path, offset, size);
-            g_bpCoreFunctions->postResults(tid, bp::Path(s.native()).elemPtr());
+            boost::filesystem::path s = fs->getSlice(path, offset, size);
+            g_bpCoreFunctions->postResults(tid, bp::Path(bp::file::nativeUtf8String(s)).elemPtr());
         } catch (const std::string& e) {
             g_bpCoreFunctions->postError(tid, "bp.fileAccessError", e.c_str());
         }
