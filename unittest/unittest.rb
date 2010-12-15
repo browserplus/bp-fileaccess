@@ -41,7 +41,6 @@ class TestFileAccess < Test::Unit::TestCase
         allchunks = s.chunk({ 'file' => file_uri, 'chunkSize' => chunksize })
         iter = (File.size(file_path) / chunksize)
         for i in 0..iter
-          allchunks[i].slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
           got = open(allchunks[i], "rb") { |f| f.read() }
           want = File.open(file_path, "rb") { |f| f.read() }[i * chunksize, chunksize]
           assert_equal(want, got)
@@ -63,13 +62,11 @@ class TestFileAccess < Test::Unit::TestCase
         want = File.open(file_path, "rb") { |f| f.read() }[0, File.size(file_path) + 1]
         chunksize = json["chunkSize"]
         allchunks = s.chunk({ 'file' => file_uri, 'chunkSize' => File.size(file_path) + 1} )
-        allchunks[0].slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
         got = open(allchunks[0], "rb") { |f| f.read() }
         assert_equal(want, got)
 
         # Negative chunksize returns whole file.
         allchunks = s.chunk({ 'file' => file_uri, 'chunkSize' => -5000} )
-        allchunks[0].slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
         got = open(allchunks[0], "rb") { |f| f.read() }
         want = File.open(file_path, "rb") { |f| f.read() }
         assert_equal(want, got)
@@ -254,7 +251,6 @@ class TestFileAccess < Test::Unit::TestCase
         # Read entire file, no offset or size.
         want = File.open(file_path, "rb") { |f| f.read }
         got = s.slice({ 'file' => file_uri})
-        got.slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
         got = open(got, "rb") { |f| f.read }
         assert_equal(want, got)
       end
@@ -276,7 +272,6 @@ class TestFileAccess < Test::Unit::TestCase
         # Slice with offset and size.
         want = File.open(file_path, "rb") { |f| f.read() }[offset, size]
         got = s.slice({ 'file' => file_uri, 'offset' => offset, 'size' => size})
-        got.slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
         got = open(got, "rb") { |f| f.read() }
         assert_equal(want, got)
       end
@@ -297,7 +292,6 @@ class TestFileAccess < Test::Unit::TestCase
 
         want = File.open(file_path, "rb") { |f| f.read() }[offset, size]
         got = s.slice({ 'file' => file_uri, 'offset' => offset, 'size' => size})
-        got.slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
         got = open(got, "rb") { |f| f.read() }
         assert_equal(want, got)
       end
@@ -336,7 +330,6 @@ class TestFileAccess < Test::Unit::TestCase
         # Offset set at last byte, should return nothing ("").
         want = ""
         got = s.slice({ 'file' => file_uri, 'offset' => File.size(file_path) })
-        got.slice!(0..0) if CONFIG['arch'] =~ /mswin|mingw/
         got = open(got, "rb") { |f| f.read() }
         assert_equal(want, got)
       end
