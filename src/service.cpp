@@ -105,13 +105,13 @@ readFileContents(const boost::filesystem::path & path,
     fstream.read ((char *) buffer, size);
     if (fstream.gcount() > 0) {
         // no support for "binary data" --> embedded nulls
-        if (hasEmbeddedNulls(buffer, fstream.gcount())) {
+        if (hasEmbeddedNulls(buffer, (unsigned int) fstream.gcount())) {
             delete [] buffer;            
             err = "binary data not supported";
             return NULL; 
         }
         // encode into a js literal
-        s = new bp::String((char *) buffer, fstream.gcount());
+        s = new bp::String((char *) buffer, (unsigned int) fstream.gcount());
     } else {
         s = new bp::String("", 0);
     }

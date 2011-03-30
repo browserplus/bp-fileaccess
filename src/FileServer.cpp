@@ -103,7 +103,7 @@ FileServer::getFileChunks(const boost::filesystem::path& path,
 
     // get filesize
     fstream.seekg(0, std::ios::end);
-    size_t size = fstream.tellg();
+    size_t size = (size_t) fstream.tellg();
     fstream.seekg(0, std::ios::beg);
     BPCLOG_DEBUG_STRM("file size = " << size);
 
@@ -136,7 +136,7 @@ FileServer::getFileChunks(const boost::filesystem::path& path,
             if (fstream.bad()) {
                 throw std::string("error reading file");
             }
-            size_t numRead = fstream.gcount();
+            size_t numRead = (size_t) fstream.gcount();
             totalRead += numRead;
             BPCLOG_DEBUG_STRM("read " << numRead << ", totalRead = " << totalRead);
 
@@ -204,7 +204,7 @@ FileServer::getSlice(const boost::filesystem::path& path,
 
     // get filesize
     fstream.seekg(0, std::ios::end);
-    size_t actual = fstream.tellg();
+    size_t actual = (size_t) fstream.tellg();
     fstream.seekg(0, std::ios::beg);
 
     // if file fits in slice, just return the file
@@ -243,7 +243,7 @@ FileServer::getSlice(const boost::filesystem::path& path,
         if (fstream.bad()) {
             throw std::string("error reading file");
         }
-        size_t numRead = fstream.gcount();
+        size_t numRead = (size_t) fstream.gcount();
         ofs.write(buf, numRead);
         if (ofs.bad()) throw std::string("error writing to new file");
         

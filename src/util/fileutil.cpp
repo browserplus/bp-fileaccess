@@ -151,8 +151,10 @@ FILE *
 ft::fopen_binary_read(std::string utf8Path)
 {
     if (utf8Path.empty()) return false;
-#ifdef WIN32    
-    return _wfopen(utf8ToWide(utf8Path).c_str(), L"rb");
+#ifdef WIN32   
+    FILE* rval = NULL;
+    (void) _wfopen_s(&rval, utf8ToWide(utf8Path).c_str(), L"rb");
+    return rval;
 #else
     return fopen(utf8Path.c_str(), "r");
 #endif
@@ -163,7 +165,9 @@ ft::fopen_binary_write(std::string utf8Path)
 {
     if (utf8Path.empty()) return false;
 #ifdef WIN32    
-    return _wfopen(utf8ToWide(utf8Path).c_str(), L"wb");
+    FILE* rval = NULL;
+    (void) _wfopen_s(&rval, utf8ToWide(utf8Path).c_str(), L"wb");
+    return rval;
 #else
     return fopen(utf8Path.c_str(), "w");
 #endif
