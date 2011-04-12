@@ -251,20 +251,20 @@ BPPInvoke(void * instance, const char * funcName,
 /* here is the definition of the corelet interface */
 BPArgumentDefinition s_readFileArgs[] = {
     {
-        "file",
-        "The input file to operate on.",
+        (BPString) "file",
+        (BPString) "The input file to operate on.",
         BPTPath,
         BP_TRUE
     },
     {
-        "offset",
-        "The beginning byte offset.",
+        (BPString) "offset",
+        (BPString) "The beginning byte offset.",
         BPTInteger,
         BP_FALSE
     },
     {
-        "size",
-        "The amount of data.",
+        (BPString) "size",
+        (BPString) "The amount of data.",
         BPTInteger,
         BP_FALSE
     }
@@ -273,8 +273,8 @@ BPArgumentDefinition s_readFileArgs[] = {
 /* here is the definition of the corelet interface */
 BPArgumentDefinition s_getURLArgs[] = {
     {
-        "file",
-        "The file that you would like to read via a localhost url.",
+        (BPString) "file",
+        (BPString) "The file that you would like to read via a localhost url.",
         BPTPath,
         BP_TRUE
     }
@@ -282,14 +282,14 @@ BPArgumentDefinition s_getURLArgs[] = {
 
 BPArgumentDefinition s_getFileChunksArgs[] = {
     {
-        "file",
-        "The file that you would like to chunk.",
+        (BPString) "file",
+        (BPString) "The file that you would like to chunk.",
         BPTPath,
         BP_TRUE
     },
     {  
-        "chunkSize",
-        "The desired chunk size, not to exceed 2MB.  Default is 2MB.",
+        (BPString) "chunkSize",
+        (BPString) "The desired chunk size, not to exceed 2MB.  Default is 2MB.",
         BPTInteger,
         BP_FALSE
     }
@@ -297,22 +297,22 @@ BPArgumentDefinition s_getFileChunksArgs[] = {
 
 BPFunctionDefinition s_functions[] = {
     {
-        "read",
-        "Read the contents of a file on disk returning a string.  "
+        (BPString) "read",
+        (BPString) "Read the contents of a file on disk returning a string.  "
         "If the file contains binary data an error will be returned.",
         sizeof(s_readFileArgs)/sizeof(s_readFileArgs[0]),
         s_readFileArgs
     },
     {
-        "slice",
-        "Given a file and an optional offset and size, return a new "
+        (BPString) "slice",
+        (BPString) "Given a file and an optional offset and size, return a new "
         "file whose contents are a subset of the first.",
         sizeof(s_readFileArgs)/sizeof(s_readFileArgs[0]),
         s_readFileArgs
     },
     {
-        "getURL",
-        "Get a localhost url that can be used to attain the full contents"
+        (BPString) "getURL",
+        (BPString) "Get a localhost url that can be used to attain the full contents"
         " of a file on disk.  The URL will be of the form "
         "http://127.0.0.1:<port>/<uuid> -- The port will be an ephemerally "
         "bound port, the uuid will be a traditional GUID.  When a local "
@@ -324,8 +324,8 @@ BPFunctionDefinition s_functions[] = {
         s_getURLArgs
     },
     {
-        "chunk",
-        "Get a vector of objects that result from chunking a file. "
+        (BPString) "chunk",
+        (BPString) "Get a vector of objects that result from chunking a file. "
         "The return value will be an ordered list of file handles with each "
         "successive file representing a different chunk",
         sizeof(s_getFileChunksArgs)/sizeof(s_getFileChunksArgs[0]),
@@ -335,9 +335,9 @@ BPFunctionDefinition s_functions[] = {
 
 // a description of this corelet.
 BPCoreletDefinition s_coreletDef = {
-    "FileAccess",
+    (BPString) "FileAccess",
     2, 0, 4,
-    "Access the contents of files that the user has selected.",
+    (BPString) "Access the contents of files that the user has selected.",
     sizeof(s_functions)/sizeof(s_functions[0]),
     s_functions
 };
