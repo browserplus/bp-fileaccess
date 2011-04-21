@@ -237,17 +237,22 @@ class Base64
     **
     ** base64 encode a stream adding padding and line breaks as per spec.
     */
-    void encode( std::istream& inStr, std::ostream& outStr, int linesize = -1 )
+    void encode( std::istream& inStr, 
+                 int size,                // -1 means all
+                 std::ostream& outStr,
+                 int linesize = -1 )
     {
         unsigned char in[3], out[4];
         int i, len, blocksout = 0;
+        int numRead = 0;
 
-        while( inStr.good() ) {
+        while( (size > 0 && numRead < size) && inStr.good() ) {
             len = 0;
             for( i = 0; i < 3; i++ ) {
                 inStr.get( (char&) in[i] );
                 if( inStr.good() ) {
                     len++;
+                    numRead++;
                 }
                 else {
                     in[i] = 0;
@@ -275,12 +280,15 @@ class Base64
     **
     ** decode a base64 encoded stream discarding padding, line breaks and noise
     */
-    void decode( std::istream& inStr, std::ostream& outStr )
+    void decode( std::istream& inStr,
+                 int size,                // -1 means all
+                 std::ostream& outStr )
     {
         unsigned char in[4], out[3], v;
         int i, len;
+        int numRead = 0;
 
-        while( inStr.good() ) {
+        while( (size > 0 && numRead < size) && inStr.good() ) {
             for( len = 0, i = 0; i < 4 && inStr.good(); i++ ) {
                 v = 0;
                 while( inStr.good() && v == 0 ) {
@@ -291,6 +299,7 @@ class Base64
                     }
                 }
                 if( inStr.good() ) {
+                    numRead++;
                     len++;
                     if( v ) {
                         in[ i ] = (unsigned char) (v - 1);

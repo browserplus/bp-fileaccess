@@ -8,6 +8,7 @@
 #include "service.h"
 #include "bptypeutil.hh"
 #include "bpurlutil.hh"
+#include "base64.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -62,7 +63,9 @@ hasEmbeddedNulls(unsigned char * bytes, unsigned int len)
 
 static bp::String *
 readFileContents(const boost::filesystem::path & path,
-                 unsigned int offset, int size, std::string & err)
+                 unsigned int offset, int size,
+                 bool base64,
+                 std::string & err)
 {
     std::ifstream fstream;
 
@@ -97,25 +100,33 @@ readFileContents(const boost::filesystem::path & path,
     
     fstream.seekg (offset, std::ios::beg);
 
-    // allocate memory:
+    // allocate memory:1
     unsigned char * buffer = new unsigned char [size];
     bp::String * s = NULL;
 
-    // read data
-    fstream.read ((char *) buffer, size);
-    if (fstream.gcount() > 0) {
-        // no support for "binary data" --> embedded nulls
-        if (hasEmbeddedNulls(buffer, (unsigned int) fstream.gcount())) {
-            delete [] buffer;            
-            err = "binary data not supported";
-            return NULL; 
-        }
+    if (base64) {
+        std::stringstream ss;
+        Base64 b64;
+        b64.encode(fstream, size, ss);
         // encode into a js literal
-        s = new bp::String((char *) buffer, (unsigned int) fstream.gcount());
+        s = new bp::String(ss.str().c_str(), (unsigned int) ss.str().length());
     } else {
-        s = new bp::String("", 0);
+        // read data
+        fstream.read ((char *) buffer, size);
+        if (fstream.gcount() > 0) {
+            // no support for "binary data" --> embedded nulls
+            if (hasEmbeddedNulls(buffer, (unsigned int) fstream.gcount())) {
+                delete [] buffer;            
+                err = "binary data not supported";
+                return NULL; 
+            }
+            // encode into a js literal
+            s = new bp::String((char *) buffer, (unsigned int) fstream.gcount());
+        } else {
+            s = new bp::String("", 0);
+        }
     }
-    
+
     fstream.close();
     
     delete [] buffer;
@@ -150,9 +161,10 @@ BPPInvoke(void * instance, const char * funcName,
 
     boost::filesystem::path path(pathString);
     
-    if (!strcmp(funcName, "read"))
+    if (!strcmp(funcName, "read") || !strcmp(funcName, "readBase64"))
     {
-        BPCLOG_INFO( "read" );
+        bool base64 = !strcmp(funcName, "readBase64");
+        BPCLOG_INFO( base64 ? "readBas64" : "read" );
         
         unsigned int offset = 0;
         int size = -1;
@@ -165,7 +177,7 @@ BPPInvoke(void * instance, const char * funcName,
 
         bp::String * contents = NULL;
         std::string err;
-        contents = readFileContents(path, offset, size, err);
+        contents = readFileContents(path, offset, size, base64, err);
 
         if (!err.empty()) {
             g_bpCoreFunctions->postError(tid, "bp.fileAccessError",
@@ -300,6 +312,14 @@ BPFunctionDefinition s_functions[] = {
         (BPString) "read",
         (BPString) "Read the contents of a file on disk returning a string.  "
         "If the file contains binary data an error will be returned.",
+        sizeof(s_readFileArgs)/sizeof(s_readFileArgs[0]),
+        s_readFileArgs
+    },
+    {
+        // Note that readBase64 has same args as read
+        (BPString) "readBase64",
+        (BPString) "Read the contents of a file on disk returning a base64 encoded string.  "
+        "Since the return is base64 encoded, it will be 4/3 times the size of the request.",
         sizeof(s_readFileArgs)/sizeof(s_readFileArgs[0]),
         s_readFileArgs
     },
