@@ -10,7 +10,6 @@
 #include "FileServer.h"
 #include "service.h"
 #include "littleuuid.h"
-#include "util/fileutil.hh"
 #include "util/bpsync.hh"
 
 #include <mongoose/mongoose.h>
@@ -289,20 +288,25 @@ FileServer::mongooseCallback(void * connPtr, void * requestPtr,
         path = it->second;
     }
     
-
     // read file and output to connection
-    FILE * f = ft::fopen_binary_read(path.string());
-    if (f == NULL) {
+    std::ifstream ifs;
+    if (!bp::file::openReadableStream(ifs, path.string(), std::ios::binary)) {
         BPCLOG_WARN_STRM( "Couldn't open file for reading " << path );
         mg_printf(conn, "HTTP/1.0 500 Internal Error\r\n\r\n");
         return;
     }
 
-    long len;
-    if (0 != fseek(f, 0, SEEK_END) ||
-        (len = ftell(f)) < 0 ||
-        0 != fseek(f, 0, SEEK_SET))
-    {
+    // get length of file:
+    long len = 0;
+    try {
+        ifs.seekg(0, std::ios::end);
+        len = ifs.tellg();
+        ifs.seekg(0, std::ios::beg);
+    } catch (...) {
+        len = -1;
+    }
+
+    if (len < 0) {
         BPCLOG_WARN_STRM( "Couldn't determine file length: " << path );
         mg_printf(conn, "HTTP/1.0 500 Internal Error\r\n\r\n");
         return;
@@ -323,11 +327,13 @@ FileServer::mongooseCallback(void * connPtr, void * requestPtr,
     mg_printf(conn, "\r\n");    
 
     char buf[1024 * 32];
-    size_t rd;
-    while ((rd = fread(buf, sizeof(char), sizeof(buf), f)) > 0) {
+    while (!ifs.eof()) {
+        size_t rd = 0;
+        ifs.read(buf, sizeof(buf));
+        rd = ifs.gcount();
         if (rd != (size_t) mg_write(conn, buf, rd)) {
             BPCLOG_WARN( "partial write detected!  client left?" );
-            fclose(f);
+            ifs.close();
             return;
         }
     }

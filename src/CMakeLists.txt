@@ -44,6 +44,7 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-build-templates/cmake/BuildCo
 
 INCLUDE_DIRECTORIES(
   "${CMAKE_CURRENT_SOURCE_DIR}/../external/dist/include"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-framework/include"
   "${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/CppTools/external/bpsdk/include"
   "${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/CppTools/src"
 )
@@ -85,8 +86,8 @@ ELSE()
        SET(OS_LIBS ${CARBON_LIBRARY})
    ENDIF()
 ENDIF ()
-SET(SRCS service.cpp littleuuid.cpp FileServer.cpp util/fileutil.cpp ${EXT_SRCS} ${OS_SRCS})
-SET(HDRS service.h littleuuid.h ResourceLimit.h FileServer.h util/bpsync.hh util/fileutil.hh)
+SET(SRCS service.cpp littleuuid.cpp FileServer.cpp ${EXT_SRCS} ${OS_SRCS})
+SET(HDRS service.h littleuuid.h ResourceLimit.h FileServer.h util/bpsync.hh)
 SET(LIBS mongoose_s bpfile_s ${BOOST_LIBS} ${OS_LIBS})
 
 BPAddCppService()
