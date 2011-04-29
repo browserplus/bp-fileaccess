@@ -10,8 +10,6 @@
 #include "FileServer.h"
 #include "service.h"
 #include "littleuuid.h"
-#include "util/bpsync.hh"
-
 #include <mongoose/mongoose.h>
 
 #define FS_MAX_TEMP_FILES 1024
@@ -70,7 +68,7 @@ FileServer::addFile(const boost::filesystem::path& path)
     uuid_generate(uuid);
     url << "http://127.0.0.1:" << m_port << "/" << uuid;
     {
-        bp::sync::Lock lck(m_lock);
+        bplus::sync::Lock lck(m_lock);
         m_paths[uuid] = path;
     }
 
@@ -277,7 +275,7 @@ FileServer::mongooseCallback(void * connPtr, void * requestPtr,
 
     boost::filesystem::path path;
     {
-        bp::sync::Lock lck(self->m_lock);
+        bplus::sync::Lock lck(self->m_lock);
         std::map<std::string,boost::filesystem::path>::const_iterator it;
         it = self->m_paths.find(id);
         if (it == self->m_paths.end()) {

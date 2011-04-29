@@ -9,7 +9,7 @@
 #define __FILE_SERVER_H__
 
 #include "bp-file/bpfile.h"
-#include "util/bpsync.hh"
+#include "bputil/bpsync.h"
 
 #include "ResourceLimit.h"
 
@@ -58,7 +58,7 @@ class FileServer
     boost::filesystem::path m_tempDir;
     ResourceLimit m_limit;
     void * m_ctx;
-    bp::sync::Mutex m_lock;
+    bplus::sync::Mutex m_lock;
 };
 
 #endif
