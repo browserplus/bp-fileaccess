@@ -2,7 +2,6 @@
 #define __CORELET_H__
 
 #include <ServiceAPI/bpcfunctions.h>
-
 #include <sstream>
 
 extern const BPCFunctionTable * g_bpCoreFunctions;

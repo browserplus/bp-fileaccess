@@ -5,29 +5,25 @@
  *  (c) 2008 Yahoo! inc.
  */
 
-#ifndef __FILE_SERVER_H__
-#define __FILE_SERVER_H__
+#ifndef __FILESERVER_H__
+#define __FILESERVER_H__
 
 #include "bp-file/bpfile.h"
 #include "bputil/bpsync.h"
-
 #include "ResourceLimit.h"
-
 #include <string>
 #include <vector>
 #include <map>
 
-class ChunkInfo
-{
- public:
+class ChunkInfo {
+public:
     boost::filesystem::path m_path;
     size_t m_chunkNumber;
     size_t m_numberOfChunks;
 };
 
-class FileServer
-{
-  public:
+class FileServer {
+public:
     FileServer(const boost::filesystem::path& tempDir);
     ~FileServer();
 
@@ -41,23 +37,17 @@ class FileServer
     /* add a chunked file to the server, returning a vector of 
      * ChunkInfo (empty on error)
      */
-    std::vector<ChunkInfo> getFileChunks(const boost::filesystem::path& path,
-                                         size_t chunkSize);
-
+    std::vector<ChunkInfo> getFileChunks(const boost::filesystem::path& path, size_t chunkSize);
     /* get a slice of a file */
-    boost::filesystem::path getSlice(const boost::filesystem::path& path,
-                                     size_t offset, size_t size);
-
-  private:
-
-    static void mongooseCallback(void * connPtr, void * requestPtr,
-                                 void * user_data);
-
+    boost::filesystem::path getSlice(const boost::filesystem::path& path, size_t offset, size_t size);
+private:
+    static void mongooseCallback(void* connPtr, void* requestPtr, void* user_data);
+private:
     unsigned short int m_port;
     std::map<std::string, boost::filesystem::path> m_paths;
     boost::filesystem::path m_tempDir;
     ResourceLimit m_limit;
-    void * m_ctx;
+    void* m_ctx;
     bplus::sync::Mutex m_lock;
 };
 

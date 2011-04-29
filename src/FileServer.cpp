@@ -5,8 +5,6 @@
  *  (c) 2008 Yahoo! inc.
  */
 
-#include <fstream>
-
 #include "FileServer.h"
 #include "service.h"
 #include "littleuuid.h"
@@ -14,116 +12,96 @@
 
 #define FS_MAX_TEMP_FILES 1024
 #define FS_MAX_TEMP_BYTES 1024 * 1024 * 512
+#define BUFSIZE 1024 * 8
 
-
-FileServer::FileServer(const boost::filesystem::path& tempDir) 
-    : m_tempDir(tempDir),
-      m_limit(FS_MAX_TEMP_FILES, FS_MAX_TEMP_BYTES),
-      m_ctx(NULL)
-{
-    BPCLOG_INFO_STRM( "ctor, tempDir = " << m_tempDir );
+FileServer::FileServer(const boost::filesystem::path& tempDir) :
+    m_tempDir(tempDir),
+    m_limit(FS_MAX_TEMP_FILES, FS_MAX_TEMP_BYTES),
+    m_ctx(NULL) {
+    BPCLOG_INFO_STRM("ctor, tempDir = " << m_tempDir);
 }
 
-FileServer::~FileServer()
-{
+FileServer::~FileServer() {
     if (m_ctx) {
-        mg_stop((struct mg_context *) m_ctx);
-        mg_destroy((struct mg_context *) m_ctx);        
+        mg_stop((struct mg_context*)m_ctx);
+        mg_destroy((struct mg_context*)m_ctx);        
         m_ctx = NULL;
     }
-    BPCLOG_INFO( "Stopping m_httpServer." );
+    BPCLOG_INFO("Stopping m_httpServer.");
     bp::file::safeRemove(m_tempDir);
 }
 
 std::string
-FileServer::start()
-{
+FileServer::start() {
     std::stringstream boundTo;
     m_port = 0;
-    struct mg_context * ctx = mg_create();
-    int nRet = mg_set_option( ctx, "ports", "0" );
+    struct mg_context* ctx = mg_create();
+    int nRet = mg_set_option(ctx, "ports", "0");
     if (nRet <= 0 || !mg_start(ctx)) {
         mg_destroy(ctx);
         return std::string();
     }
-    m_port = (unsigned short) nRet;
+    m_port = (unsigned short)nRet;
     boundTo << "127.0.0.1:" << m_port;
-    BPCLOG_INFO_STRM( "Bound to: " << boundTo.str() );
+    BPCLOG_INFO_STRM("Bound to: " << boundTo.str());
     m_ctx = ctx;
-
     // now set up the callback function
-    mg_set_uri_callback(ctx, "*", (mg_callback_t) mongooseCallback, (void *) this);
-    
+    mg_set_uri_callback(ctx, "*", (mg_callback_t)mongooseCallback, (void*)this);
     return boundTo.str();
 }
 
-
 std::string
-FileServer::addFile(const boost::filesystem::path& path)
-{
+FileServer::addFile(const boost::filesystem::path& path) {
     // generate a nice random url path
     std::stringstream url;    
     std::string uuid;
-
     uuid_generate(uuid);
     url << "http://127.0.0.1:" << m_port << "/" << uuid;
     {
         bplus::sync::Lock lck(m_lock);
         m_paths[uuid] = path;
     }
-
-    BPCLOG_DEBUG_STRM( "m_urls[" << uuid << "] = " << path.string() );
+    BPCLOG_DEBUG_STRM("m_urls[" << uuid << "] = " << path.string());
     return url.str();
 }
 
 std::vector<ChunkInfo>
-FileServer::getFileChunks(const boost::filesystem::path& path,
-                          size_t chunkSize)
-{
+FileServer::getFileChunks(const boost::filesystem::path& path, size_t chunkSize) {
     if (m_tempDir.empty()) {
         throw std::string("no temp dir set, internal error");        
     }
-
     try {
         boost::filesystem::create_directories(m_tempDir);
     } catch (const boost::filesystem::filesystem_error&) {
         throw std::string("unable to create temp dir");
     }
-
     std::vector<ChunkInfo> rval;
-
     std::ifstream fstream;
-    if (!bp::file::openReadableStream(fstream, path, 
-                                      std::ios_base::in | std::ios_base::binary)) {
+    if (!bp::file::openReadableStream(fstream, path, std::ios_base::in | std::ios_base::binary)) {
         throw std::string("cannot open file for reading");
     }
-
     // get filesize
     fstream.seekg(0, std::ios::end);
     size_t size = (size_t) fstream.tellg();
     fstream.seekg(0, std::ios::beg);
     BPCLOG_DEBUG_STRM("file size = " << size);
-
-    if (size <= 0) throw std::string("chunk size is invalid");
-
+    if (size <= 0) {
+        throw std::string("chunk size is invalid");
+    }
     // check resource usage
     if (m_limit.wouldExceed(size / chunkSize, size)) {
         throw std::string("allowed resources exceeded");
     }
-
-
     // if file fits in a single chunk, just return the file
     if (size <= chunkSize) {
-        ChunkInfo i = {path, 1, 1};
+        ChunkInfo i = { path, 1, 1 };
         rval.push_back(i);
         return rval;
     }
-
     char* buf = new char[chunkSize];
     if (!buf) {
         throw std::string("unable to allocate memory");
     }
-
     try {
         size_t chunkNumber = 0;
         size_t totalRead = 0;
@@ -133,18 +111,16 @@ FileServer::getFileChunks(const boost::filesystem::path& path,
             if (fstream.bad()) {
                 throw std::string("error reading file");
             }
-            size_t numRead = (size_t) fstream.gcount();
+            size_t numRead = (size_t)fstream.gcount();
             totalRead += numRead;
             BPCLOG_DEBUG_STRM("read " << numRead << ", totalRead = " << totalRead);
-
             // write chunk to a file
             std::stringstream ss;
             ss << path.filename().string() << "_chunk-" << chunkNumber << "_";
             boost::filesystem::path p = bp::file::getTempPath(m_tempDir, ss.str());
             BPCLOG_DEBUG_STRM("chunk file: " << p);
             std::ofstream ofs;
-            if (!bp::file::openWritableStream(ofs, p, std::ios_base::out
-                                              | std::ios_base::binary)) {
+            if (!bp::file::openWritableStream(ofs, p, std::ios_base::out | std::ios_base::binary)) {
                 throw std::string("unable to open temp chunk file");
             }
             ofs.write(buf, numRead);
@@ -157,7 +133,6 @@ FileServer::getFileChunks(const boost::filesystem::path& path,
             info.m_chunkNumber = chunkNumber++;
             rval.push_back(info);
         }
-
         for (size_t i = 0; i < rval.size(); i++) {
             rval[i].m_numberOfChunks = chunkNumber;
         }
@@ -166,14 +141,11 @@ FileServer::getFileChunks(const boost::filesystem::path& path,
         throw(e);
     }
     delete [] buf;
-    
     // update usage:
     m_limit.noteUsage(size / chunkSize, size);
-
     return rval;
 }
 
-#define BUFSIZE (1024 * 8)
 boost::filesystem::path
 FileServer::getSlice(const boost::filesystem::path& path,
                      size_t offset, size_t size)
@@ -251,49 +223,39 @@ FileServer::getSlice(const boost::filesystem::path& path,
 }
 
 void
-FileServer::mongooseCallback(void * connPtr, void * requestPtr,
-                             void * user_data)
-{
-    struct mg_connection * conn = (struct mg_connection *) connPtr;
-    const struct mg_request_info * request = (const struct mg_request_info * ) requestPtr;
-    FileServer * self = (FileServer *) user_data;
-    
+FileServer::mongooseCallback(void* connPtr, void* requestPtr, void* user_data) {
+    struct mg_connection* conn = (struct mg_connection*)connPtr;
+    const struct mg_request_info* request = (const struct mg_request_info*)requestPtr;
+    FileServer* self = (FileServer*)user_data;
     std::string id(request->uri);
-    BPCLOG_INFO_STRM( "request.url.path = " << id );
+    BPCLOG_INFO_STRM("request.url.path = " << id);
     // drop the leading /
-    id = id.substr(1, id.length()-1);
-
-    // if we can find a slash '/', in the url, we'll drop everything
-    // after it.
+    id = id.substr(1, id.length() - 1);
+    // if we can find a slash '/', in the url, we'll drop everything after it.
     size_t slashLoc = id.find('/');
     if (slashLoc != std::string::npos) {
         id = id.substr(0, slashLoc);
     }
-
-    BPCLOG_INFO_STRM( "token '" << id << "' extracted from request path: "
-                      << request->uri );
-
+    BPCLOG_INFO_STRM("token '" << id << "' extracted from request path: " << request->uri);
     boost::filesystem::path path;
     {
         bplus::sync::Lock lck(self->m_lock);
         std::map<std::string,boost::filesystem::path>::const_iterator it;
         it = self->m_paths.find(id);
         if (it == self->m_paths.end()) {
-            BPCLOG_WARN( "Requested id not found." );
+            BPCLOG_WARN("Requested id not found.");
             mg_printf(conn, "HTTP/1.0 404 Not Found\r\n\r\n");
             return;
         }
         path = it->second;
     }
-    
     // read file and output to connection
     std::ifstream ifs;
     if (!bp::file::openReadableStream(ifs, path.string(), std::ios::binary)) {
-        BPCLOG_WARN_STRM( "Couldn't open file for reading " << path );
+        BPCLOG_WARN_STRM("Couldn't open file for reading " << path);
         mg_printf(conn, "HTTP/1.0 500 Internal Error\r\n\r\n");
         return;
     }
-
     // get length of file:
     long len = 0;
     try {
@@ -303,17 +265,14 @@ FileServer::mongooseCallback(void * connPtr, void * requestPtr,
     } catch (...) {
         len = -1;
     }
-
     if (len < 0) {
-        BPCLOG_WARN_STRM( "Couldn't determine file length: " << path );
+        BPCLOG_WARN_STRM("Couldn't determine file length: " << path);
         mg_printf(conn, "HTTP/1.0 500 Internal Error\r\n\r\n");
         return;
     }
-
     mg_printf(conn, "HTTP/1.0 200 OK\r\n");
     mg_printf(conn, "Content-Length: %ld\r\n", len);
     mg_printf(conn, "Server: FileAccess BrowserPlus service\r\n");
-
     // set mime type header
     {
         std::vector<std::string> mts;
@@ -323,19 +282,17 @@ FileServer::mongooseCallback(void * connPtr, void * requestPtr,
         }
     }
     mg_printf(conn, "\r\n");    
-
     char buf[1024 * 32];
     while (!ifs.eof()) {
         size_t rd = 0;
         ifs.read(buf, sizeof(buf));
         rd = ifs.gcount();
         if (rd != (size_t) mg_write(conn, buf, rd)) {
-            BPCLOG_WARN( "partial write detected!  client left?" );
+            BPCLOG_WARN("partial write detected!  client left?");
             ifs.close();
             return;
         }
     }
-
-    BPCLOG_DEBUG( "Request processed." );
+    BPCLOG_DEBUG("Request processed.");
     return;
 }

@@ -70,11 +70,11 @@ SET(EXT_SRCS
 
 # add required OS libs here
 SET(OS_LIBS)
-SET (OS_SRCS)
 IF (WIN32)
    # Visual Studio does some autolink magic with boost, no need
    # to specify library
    SET (OS_LIBS Winmm Ws2_32 mswsock rpcrt4 psapi)
+   SET (OS_SRCS littleuuid_Windows.cpp)
 ELSE()
    SET(BOOST_LIBS "boost_filesystem" "boost_system")
    IF (APPLE)
@@ -82,9 +82,10 @@ ELSE()
        FIND_LIBRARY(CARBON_LIBRARY Carbon)
        MARK_AS_ADVANCED(CARBON_LIBRARY)
        SET(OS_LIBS ${CARBON_LIBRARY})
+       SET (OS_SRCS littleuuid_Darwin.cpp)
    ENDIF()
 ENDIF ()
-SET(SRCS service.cpp littleuuid.cpp FileServer.cpp ${EXT_SRCS} ${OS_SRCS})
+SET(SRCS service.cpp FileServer.cpp ${EXT_SRCS} ${OS_SRCS})
 SET(HDRS service.h littleuuid.h ResourceLimit.h FileServer.h)
 SET(LIBS mongoose_s bpfile_s ${BOOST_LIBS} ${OS_LIBS})
 
