@@ -45,8 +45,6 @@ INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-build-templates/cmake/BuildCo
 INCLUDE_DIRECTORIES(
   "${CMAKE_CURRENT_SOURCE_DIR}/../external/dist/include"
   "${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-framework/include"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/CppTools/external/bpsdk/include"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/CppTools/src"
 )
 
 IF ("${CMAKE_BUILD_TYPE}" STREQUAL "CodeCoverage")
@@ -60,13 +58,6 @@ ELSE ()
     "${CMAKE_CURRENT_SOURCE_DIR}/../external/dist/lib/${CMAKE_BUILD_TYPE}"
   )
 ENDIF ()
-
-SET(EXT_SRCS
-  ${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/CppTools/src/bptypeutil.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/CppTools/src/bpurlutil.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/CppTools/src/bpservicedescription.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/../external/bp-service-tools/CppTools/src/bpserviceversion.cpp
-)
 
 # add required OS libs here
 SET(OS_LIBS)
@@ -85,8 +76,8 @@ ELSE()
        SET (OS_SRCS littleuuid_Darwin.cpp)
    ENDIF()
 ENDIF ()
-SET(SRCS service.cpp FileServer.cpp ${EXT_SRCS} ${OS_SRCS})
-SET(HDRS service.h littleuuid.h ResourceLimit.h FileServer.h)
+SET(SRCS service.cpp FileServer.cpp ${OS_SRCS})
+SET(HDRS littleuuid.h ResourceLimit.h FileServer.h)
 SET(LIBS mongoose_s bpfile_s ${BOOST_LIBS} ${OS_LIBS})
 
 BPAddCppService()

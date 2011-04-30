@@ -6,9 +6,10 @@
  */
 
 #include "FileServer.h"
-#include "service.h"
+#include "bpservice/bpservice.h"
 #include "littleuuid.h"
 #include <mongoose/mongoose.h>
+#include <sstream>
 
 #define FS_MAX_TEMP_FILES 1024
 #define FS_MAX_TEMP_BYTES 1024 * 1024 * 512
@@ -18,7 +19,7 @@ FileServer::FileServer(const boost::filesystem::path& tempDir) :
     m_tempDir(tempDir),
     m_limit(FS_MAX_TEMP_FILES, FS_MAX_TEMP_BYTES),
     m_ctx(NULL) {
-    BPCLOG_INFO_STRM("ctor, tempDir = " << m_tempDir);
+    bplus::service::Service::log(BP_INFO, "ctor, tempDir = " + m_tempDir.string());
 }
 
 FileServer::~FileServer() {
@@ -27,7 +28,7 @@ FileServer::~FileServer() {
         mg_destroy((struct mg_context*)m_ctx);        
         m_ctx = NULL;
     }
-    BPCLOG_INFO("Stopping m_httpServer.");
+    bplus::service::Service::log(BP_INFO, "Stopping m_httpServer.");
     bp::file::safeRemove(m_tempDir);
 }
 
@@ -43,7 +44,7 @@ FileServer::start() {
     }
     m_port = (unsigned short)nRet;
     boundTo << "127.0.0.1:" << m_port;
-    BPCLOG_INFO_STRM("Bound to: " << boundTo.str());
+    bplus::service::Service::log(BP_INFO, "Bound to: " + boundTo.str());
     m_ctx = ctx;
     // now set up the callback function
     mg_set_uri_callback(ctx, "*", (mg_callback_t)mongooseCallback, (void*)this);
@@ -61,7 +62,7 @@ FileServer::addFile(const boost::filesystem::path& path) {
         bplus::sync::Lock lck(m_lock);
         m_paths[uuid] = path;
     }
-    BPCLOG_DEBUG_STRM("m_urls[" << uuid << "] = " << path.string());
+    bplus::service::Service::log(BP_DEBUG, "m_urls[" + uuid + "] = " + path.string());
     return url.str();
 }
 
@@ -84,7 +85,7 @@ FileServer::getFileChunks(const boost::filesystem::path& path, size_t chunkSize)
     fstream.seekg(0, std::ios::end);
     size_t size = (size_t) fstream.tellg();
     fstream.seekg(0, std::ios::beg);
-    BPCLOG_DEBUG_STRM("file size = " << size);
+    bplus::service::Service::log(BP_DEBUG, "file size = " + size);
     if (size <= 0) {
         throw std::string("chunk size is invalid");
     }
@@ -113,12 +114,14 @@ FileServer::getFileChunks(const boost::filesystem::path& path, size_t chunkSize)
             }
             size_t numRead = (size_t)fstream.gcount();
             totalRead += numRead;
-            BPCLOG_DEBUG_STRM("read " << numRead << ", totalRead = " << totalRead);
+            std::stringstream ss1;
+            ss1 << "read " << numRead << ", totalRead = " << totalRead;
+            bplus::service::Service::log(BP_DEBUG, ss1.str());
             // write chunk to a file
-            std::stringstream ss;
-            ss << path.filename().string() << "_chunk-" << chunkNumber << "_";
-            boost::filesystem::path p = bp::file::getTempPath(m_tempDir, ss.str());
-            BPCLOG_DEBUG_STRM("chunk file: " << p);
+            std::stringstream ss2;
+            ss2 << path.filename().string() << "_chunk-" << chunkNumber << "_";
+            boost::filesystem::path p = bp::file::getTempPath(m_tempDir, ss2.str());
+            bplus::service::Service::log(BP_DEBUG, "chunk file: " + p.string());
             std::ofstream ofs;
             if (!bp::file::openWritableStream(ofs, p, std::ios_base::out | std::ios_base::binary)) {
                 throw std::string("unable to open temp chunk file");
@@ -228,7 +231,7 @@ FileServer::mongooseCallback(void* connPtr, void* requestPtr, void* user_data) {
     const struct mg_request_info* request = (const struct mg_request_info*)requestPtr;
     FileServer* self = (FileServer*)user_data;
     std::string id(request->uri);
-    BPCLOG_INFO_STRM("request.url.path = " << id);
+    bplus::service::Service::log(BP_INFO, "request.url.path = " + id);
     // drop the leading /
     id = id.substr(1, id.length() - 1);
     // if we can find a slash '/', in the url, we'll drop everything after it.
@@ -236,14 +239,14 @@ FileServer::mongooseCallback(void* connPtr, void* requestPtr, void* user_data) {
     if (slashLoc != std::string::npos) {
         id = id.substr(0, slashLoc);
     }
-    BPCLOG_INFO_STRM("token '" << id << "' extracted from request path: " << request->uri);
+    bplus::service::Service::log(BP_INFO, "token '" + id + "' extracted from request path: " + request->uri);
     boost::filesystem::path path;
     {
         bplus::sync::Lock lck(self->m_lock);
         std::map<std::string,boost::filesystem::path>::const_iterator it;
         it = self->m_paths.find(id);
         if (it == self->m_paths.end()) {
-            BPCLOG_WARN("Requested id not found.");
+            bplus::service::Service::log(BP_WARN, "Requested id not found.");
             mg_printf(conn, "HTTP/1.0 404 Not Found\r\n\r\n");
             return;
         }
@@ -252,7 +255,7 @@ FileServer::mongooseCallback(void* connPtr, void* requestPtr, void* user_data) {
     // read file and output to connection
     std::ifstream ifs;
     if (!bp::file::openReadableStream(ifs, path.string(), std::ios::binary)) {
-        BPCLOG_WARN_STRM("Couldn't open file for reading " << path);
+        bplus::service::Service::log(BP_WARN, "Couldn't open file for reading " + path.string());
         mg_printf(conn, "HTTP/1.0 500 Internal Error\r\n\r\n");
         return;
     }
@@ -266,7 +269,7 @@ FileServer::mongooseCallback(void* connPtr, void* requestPtr, void* user_data) {
         len = -1;
     }
     if (len < 0) {
-        BPCLOG_WARN_STRM("Couldn't determine file length: " << path);
+        bplus::service::Service::log(BP_WARN, "Couldn't determine file length: " + path.string());
         mg_printf(conn, "HTTP/1.0 500 Internal Error\r\n\r\n");
         return;
     }
@@ -288,11 +291,11 @@ FileServer::mongooseCallback(void* connPtr, void* requestPtr, void* user_data) {
         ifs.read(buf, sizeof(buf));
         rd = ifs.gcount();
         if (rd != (size_t) mg_write(conn, buf, rd)) {
-            BPCLOG_WARN("partial write detected!  client left?");
+            bplus::service::Service::log(BP_WARN, "partial write detected!  client left?");
             ifs.close();
             return;
         }
     }
-    BPCLOG_DEBUG("Request processed.");
+    bplus::service::Service::log(BP_DEBUG, "Request processed.");
     return;
 }

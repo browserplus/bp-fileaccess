@@ -26,14 +26,11 @@ class FileServer {
 public:
     FileServer(const boost::filesystem::path& tempDir);
     ~FileServer();
-
     /* start the server, returns host/port when bound, otherwise returns
      * .empty() on error */     
     std::string start();
-
     /* add a file to the server, returning a url, .empty() on error */ 
     std::string addFile(const boost::filesystem::path& path);
-
     /* add a chunked file to the server, returning a vector of 
      * ChunkInfo (empty on error)
      */
