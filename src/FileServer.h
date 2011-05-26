@@ -11,6 +11,7 @@
 #include "bp-file/bpfile.h"
 #include "bputil/bpsync.h"
 #include "ResourceLimit.h"
+#include <mongoose/mongoose.h>
 #include <string>
 #include <vector>
 #include <map>
@@ -38,14 +39,15 @@ public:
     /* get a slice of a file */
     boost::filesystem::path getSlice(const boost::filesystem::path& path, size_t offset, size_t size);
 private:
-    static void mongooseCallback(void* connPtr, void* requestPtr, void* user_data);
+    static void* mongooseCallback(enum mg_event event, struct mg_connection *conn, const struct mg_request_info *request_info);
 private:
     unsigned short int m_port;
     std::map<std::string, boost::filesystem::path> m_paths;
     boost::filesystem::path m_tempDir;
     ResourceLimit m_limit;
-    void* m_ctx;
+    struct mg_context* m_ctx;
     bplus::sync::Mutex m_lock;
+    static FileServer* s_self;
 };
 
 #endif

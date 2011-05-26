@@ -10,23 +10,30 @@
 #include "littleuuid.h"
 #include <mongoose/mongoose.h>
 #include <sstream>
+#include <assert.h>
 
 #define FS_MAX_TEMP_FILES 1024
 #define FS_MAX_TEMP_BYTES 1024 * 1024 * 512
 #define BUFSIZE 1024 * 8
 
+FileServer* FileServer::s_self = NULL;
+
 FileServer::FileServer(const boost::filesystem::path& tempDir) :
     m_tempDir(tempDir),
     m_limit(FS_MAX_TEMP_FILES, FS_MAX_TEMP_BYTES),
     m_ctx(NULL) {
+    assert(FileServer::s_self == NULL);
+    FileServer::s_self = NULL;
     bplus::service::Service::log(BP_INFO, "ctor, tempDir = " + m_tempDir.string());
 }
 
 FileServer::~FileServer() {
     if (m_ctx) {
-        mg_stop((struct mg_context*)m_ctx);
-        mg_destroy((struct mg_context*)m_ctx);        
+        mg_stop(m_ctx);
+        mg_destroy(m_ctx);        
         m_ctx = NULL;
+        assert(FileServer::s_self != NULL);
+        FileServer::s_self = NULL;
     }
     bplus::service::Service::log(BP_INFO, "Stopping m_httpServer.");
     bp::file::safeRemove(m_tempDir);
@@ -36,18 +43,22 @@ std::string
 FileServer::start() {
     std::stringstream boundTo;
     m_port = 0;
-    struct mg_context* ctx = mg_create();
-    int nRet = mg_set_option(ctx, "ports", "0");
-    if (nRet <= 0 || !mg_start(ctx)) {
-        mg_destroy(ctx);
+    const char* options[] = {
+      "listening_ports", "0",
+      NULL
+    };
+    m_ctx = mg_create(&FileServer::mongooseCallback, NULL, options);
+    m_port = (unsigned short)atoi(mg_get_option( m_ctx, "listening_ports" ));
+    if (m_port <= 0 || !mg_start(m_ctx)) {
+        mg_destroy(m_ctx);
+        m_ctx = NULL;
+        m_port = 0;
         return std::string();
     }
-    m_port = (unsigned short)nRet;
     boundTo << "127.0.0.1:" << m_port;
     bplus::service::Service::log(BP_INFO, "Bound to: " + boundTo.str());
-    m_ctx = ctx;
-    // now set up the callback function
-    mg_set_uri_callback(ctx, "*", (mg_callback_t)mongooseCallback, (void*)this);
+    assert(FileServer::s_self == NULL);
+    FileServer::s_self = this;
     return boundTo.str();
 }
 
@@ -225,12 +236,16 @@ FileServer::getSlice(const boost::filesystem::path& path,
     return s;
 }
 
-void
-FileServer::mongooseCallback(void* connPtr, void* requestPtr, void* user_data) {
-    struct mg_connection* conn = (struct mg_connection*)connPtr;
-    const struct mg_request_info* request = (const struct mg_request_info*)requestPtr;
-    FileServer* self = (FileServer*)user_data;
-    std::string id(request->uri);
+void*
+FileServer::mongooseCallback(enum mg_event event, struct mg_connection *conn, const struct mg_request_info *request_info) {
+    if (event != MG_NEW_REQUEST) {
+        return NULL;
+    }
+    assert(FileServer::s_self != NULL);
+    if (FileServer::s_self == NULL) {
+        return NULL;
+    }
+    std::string id(request_info->uri);
     bplus::service::Service::log(BP_INFO, "request.url.path = " + id);
     // drop the leading /
     id = id.substr(1, id.length() - 1);
@@ -239,16 +254,16 @@ FileServer::mongooseCallback(void* connPtr, void* requestPtr, void* user_data) {
     if (slashLoc != std::string::npos) {
         id = id.substr(0, slashLoc);
     }
-    bplus::service::Service::log(BP_INFO, "token '" + id + "' extracted from request path: " + request->uri);
+    bplus::service::Service::log(BP_INFO, "token '" + id + "' extracted from request path: " + request_info->uri);
     boost::filesystem::path path;
     {
-        bplus::sync::Lock lck(self->m_lock);
+        bplus::sync::Lock lck(FileServer::s_self->m_lock);
         std::map<std::string,boost::filesystem::path>::const_iterator it;
-        it = self->m_paths.find(id);
-        if (it == self->m_paths.end()) {
+        it = FileServer::s_self->m_paths.find(id);
+        if (it == FileServer::s_self->m_paths.end()) {
             bplus::service::Service::log(BP_WARN, "Requested id not found.");
             mg_printf(conn, "HTTP/1.0 404 Not Found\r\n\r\n");
-            return;
+            return conn;
         }
         path = it->second;
     }
@@ -257,7 +272,7 @@ FileServer::mongooseCallback(void* connPtr, void* requestPtr, void* user_data) {
     if (!bp::file::openReadableStream(ifs, path.string(), std::ios::binary)) {
         bplus::service::Service::log(BP_WARN, "Couldn't open file for reading " + path.string());
         mg_printf(conn, "HTTP/1.0 500 Internal Error\r\n\r\n");
-        return;
+        return conn;
     }
     // get length of file:
     long len = 0;
@@ -271,7 +286,7 @@ FileServer::mongooseCallback(void* connPtr, void* requestPtr, void* user_data) {
     if (len < 0) {
         bplus::service::Service::log(BP_WARN, "Couldn't determine file length: " + path.string());
         mg_printf(conn, "HTTP/1.0 500 Internal Error\r\n\r\n");
-        return;
+        return conn;
     }
     mg_printf(conn, "HTTP/1.0 200 OK\r\n");
     mg_printf(conn, "Content-Length: %ld\r\n", len);
@@ -293,9 +308,9 @@ FileServer::mongooseCallback(void* connPtr, void* requestPtr, void* user_data) {
         if (rd != (size_t) mg_write(conn, buf, rd)) {
             bplus::service::Service::log(BP_WARN, "partial write detected!  client left?");
             ifs.close();
-            return;
+            return conn;
         }
     }
     bplus::service::Service::log(BP_DEBUG, "Request processed.");
-    return;
+    return conn;
 }
